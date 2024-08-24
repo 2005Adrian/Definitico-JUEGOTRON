@@ -53,15 +53,12 @@ namespace PRO_1DATOS
             int offsetX = (this.ClientSize.Width - gridWidth) / 2; // Centrar horizontalmente
             int offsetY = 0; // No cambiar la posición vertical
 
-            listaEnlazada = new ListaEnlazadaRectangulos(20, 25);
+            listaEnlazada = new ListaEnlazadaRectangulos(60, 65);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-
-            // Dibujar la moto
-            e.Graphics.DrawImage(jugador.MotoImagen, jugador.X, jugador.Y, 40, 40);
 
             Pen neonPen = new Pen(Color.Cyan, 2);
 
@@ -70,6 +67,9 @@ namespace PRO_1DATOS
             {
                 e.Graphics.DrawRectangle(neonPen, nodo.Rectangulo);
             }
+            // Dibujar la moto
+            e.Graphics.DrawImage(jugador.MotoImagen, jugador.X, jugador.Y, 40, 40);
+
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)

@@ -4,7 +4,7 @@ namespace PRO_1DATOS
 {
     public class ListaEnlazadaRectangulos
     {
-        public RectanguloNodo[,] Matriz { get; private set; }
+        public RectanguloNodo[,] Matriz { get;  set; }
 
         public ListaEnlazadaRectangulos(int filas, int columnas, int offsetX = 0, int offsetY = 0)
         {
