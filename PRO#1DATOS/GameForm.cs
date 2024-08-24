@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PRO_1DATOS
 {
-    public class GameTron : Form
+    public partial class GameForm : Form
     {
         private ListaEnlazadaRectangulos listaEnlazada;
         private Jugador jugador;
         private int gridWidth;
         private int gridHeight;
 
-        public GameTron()
+        public GameForm()
         {
             InitializeComponent();
             InicializarJuego();
@@ -31,12 +25,18 @@ namespace PRO_1DATOS
             int startY = gridHeight - 60; // Cerca del borde inferior de la cuadrícula
 
             // Crear instancia del jugador en el centro inferior de la cuadrícula
-            jugador = new Jugador(startX, startY, motoImagen, gridWidth, gridHeight);
+            jugador = new Jugador(startX, startY, motoImagen);
 
             this.DoubleBuffered = true; // Para reducir el parpadeo durante el movimiento
 
             // Manejar eventos de teclado
             this.KeyDown += new KeyEventHandler(OnKeyDown);
+        }
+        
+
+        private void GameForm_Load(object sender, EventArgs e)
+        {
+            // Aquí puedes agregar la lógica que quieras ejecutar cuando se cargue GameForm.
         }
 
         private void InicializarJuego()
@@ -53,7 +53,7 @@ namespace PRO_1DATOS
             int offsetX = (this.ClientSize.Width - gridWidth) / 2; // Centrar horizontalmente
             int offsetY = 0; // No cambiar la posición vertical
 
-            listaEnlazada = new ListaEnlazadaRectangulos(filas, columnas, offsetX, offsetY);
+            listaEnlazada = new ListaEnlazadaRectangulos(20, 25);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -62,14 +62,6 @@ namespace PRO_1DATOS
 
             // Dibujar la moto
             e.Graphics.DrawImage(jugador.MotoImagen, jugador.X, jugador.Y, 40, 40);
-
-            // Dibujar la estela
-            NodoEstela nodoActual = jugador.Estela.Cabeza;
-            while (nodoActual != null)
-            {
-                e.Graphics.FillRectangle(Brushes.Cyan, nodoActual.X, nodoActual.Y, 10, 10);
-                nodoActual = nodoActual.Siguiente;
-            }
 
             Pen neonPen = new Pen(Color.Cyan, 2);
 
@@ -117,24 +109,6 @@ namespace PRO_1DATOS
                 // Puedes agregar más detalles a la imagen si lo deseas
             }
             return bmp;
-        }
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // GameTron
-            // 
-            this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Name = "GameTron";
-            this.Load += new System.EventHandler(this.GameTron_Load);
-            this.ResumeLayout(false);
-
-        }
-
-        private void GameTron_Load(object sender, EventArgs e)
-        {
-            // Aquí puedes agregar la lógica que quieres ejecutar cuando se carga GameTron.
         }
     }
 }

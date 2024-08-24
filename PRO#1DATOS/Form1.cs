@@ -14,15 +14,10 @@ namespace PRO_1DATOS
         public void button1_Click(object sender, EventArgs e)
         {
             GameForm gameForm = new GameForm();
-
-            // Muestra el formulario del juego
             gameForm.Show();
-
-            // Ocultar el formulario principal (lobby)
             this.Hide();
-
-            // Manejar el cierre del formulario de juego para cerrar la aplicación
             gameForm.FormClosed += (s, args) => this.Show();
+
         }
 
         public void transparentButton1_Click(object sender, EventArgs e)

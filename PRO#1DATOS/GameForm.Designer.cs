@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -14,7 +15,7 @@ namespace PRO_1DATOS
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        /// <paramname="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -41,7 +42,7 @@ namespace PRO_1DATOS
             this.ClientSize = new System.Drawing.Size(1052, 778);
             this.Name = "GameForm";
             this.Text = "GameForm";
-            this.Load += new System.EventHandler(this.GameTron_Load);
+            this.Load += new System.EventHandler(this.GameForm_Load);
             this.ResumeLayout(false);
         }
 
@@ -51,7 +52,8 @@ namespace PRO_1DATOS
         private Panel panel1;
         private Panel panel2;
         private Panel panel3;
-
         public EventHandler GameTron_Load { get; private set; }
+
+
     }
-}
+} 

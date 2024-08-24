@@ -10,9 +10,9 @@ namespace PRO_1DATOS
         public RectanguloNodo? Izquierda { get; set; } = null;
         public RectanguloNodo? Derecha { get; set; } = null;
 
-        public RectanguloNodo(int x, int y)
+        public RectanguloNodo(int x, int y, int anchoCelda, int altoCelda)
         {
-            Rectangulo = new Rectangle(x, y, 20, 20);
+            Rectangulo = new Rectangle(x, y, anchoCelda, altoCelda);
         }
     }
 }

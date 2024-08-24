@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace PRO_1DATOS
-
 {
     public class ListaEnlazadaRectangulos
     {
@@ -23,8 +18,7 @@ namespace PRO_1DATOS
             {
                 for (int j = 0; j < columnas; j++)
                 {
-                    // Aplicar el desplazamiento en la posición de cada nodo
-                    Matriz[i, j] = new RectanguloNodo(offsetX + j * 20, offsetY + i * 20);
+                    Matriz[i, j] = new RectanguloNodo(offsetX + j * 20, offsetY + i * 20, 20, 20);
 
                     // Conectar los nodos adyacentes
                     if (i > 0)
@@ -42,4 +36,3 @@ namespace PRO_1DATOS
         }
     }
 }
-
