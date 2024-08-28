@@ -6,13 +6,13 @@ namespace PRO_1DATOS
 {
     public class Explosion
     {
-        private int x;
-        private int y;
-        private int frame;
-        private int totalFrames;
-        private System.Windows.Forms.Timer explosionTimer;
+        public int x;
+        public int y;
+        public int frame;
+        public int totalFrames;
+        public System.Windows.Forms.Timer explosionTimer;
 
-        public bool IsComplete { get; private set; }
+        public bool IsComplete { get;  set; }
 
         public Explosion(int x, int y, int totalFrames = 10, int interval = 50)
         {

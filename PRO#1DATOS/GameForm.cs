@@ -7,16 +7,16 @@ namespace PRO_1DATOS
 {
     public partial class GameForm : Form
     {
-        private ListaEnlazadaRectangulos listaEnlazada;
-        private Jugador jugador;
-        private Image motoImagen;
-        private List<Bot> bots;
-        private int gridWidth;
-        private int gridHeight;
-        private System.Windows.Forms.Timer timer;
-        private CollisionManager collisionManager;
-        private Random random;
-        private bool gameOver = false; // Esta es la variable que indica si el juego ha terminado
+        public ListaEnlazadaRectangulos listaEnlazada;
+        public Jugador jugador;
+        public Image motoImagen;
+        public List<Bot> bots;
+        public int gridWidth;
+        public int gridHeight;
+        public System.Windows.Forms.Timer timer;
+        public CollisionManager collisionManager;
+        public Random random;
+        public bool gameOver = false; // Esta es la variable que indica si el juego ha terminado
 
 
         public GameForm()
@@ -50,17 +50,18 @@ namespace PRO_1DATOS
 
 
             bots = new List<Bot>();
+            collisionManager = new CollisionManager(new List<Jugador> { jugador }, bots);
+
             for (int i = 0; i < 5; i++)
             {
                 Color botColor = GetBotColor(i);
                 int botStartX = offsetX + random.Next(columnas) * 20;
                 int botStartY = offsetY + random.Next(filas) * 20;
                 Image botImagen = CrearImagenMoto(20, 20, botColor);
-                Bot bot = new Bot(botStartX, botStartY, botImagen, botColor, offsetX, offsetY, gridWidth, gridHeight, 20);
+                Bot bot = new Bot(botStartX, botStartY, botImagen, botColor, offsetX, offsetY, gridWidth, gridHeight, 20, collisionManager);
                 bots.Add(bot);
             }
 
-            collisionManager = new CollisionManager(new List<Jugador> { jugador }, bots);
 
 
 
@@ -151,6 +152,8 @@ namespace PRO_1DATOS
 
             // Crear bots en posiciones aleatorias seguras
             bots = new List<Bot>();
+            collisionManager = new CollisionManager(new List<Jugador> { jugador }, bots);
+
             for (int i = 0; i < 5; i++)
             {
                 Color botColor = GetBotColor(i);
@@ -163,11 +166,10 @@ namespace PRO_1DATOS
                          bots.Any(b => b.X == botStartX && b.Y == botStartY));
 
                 Image botImagen = CrearImagenMoto(20, 20, botColor);
-                Bot bot = new Bot(botStartX, botStartY, botImagen, botColor, offsetX, offsetY, gridWidth, gridHeight, 20);
+                Bot bot = new Bot(botStartX, botStartY, botImagen, botColor, offsetX, offsetY, gridWidth, gridHeight, 20, collisionManager);
                 bots.Add(bot);
             }
 
-            collisionManager = new CollisionManager(new List<Jugador> { jugador }, bots);
         }
 
         protected override void OnPaint(PaintEventArgs e)

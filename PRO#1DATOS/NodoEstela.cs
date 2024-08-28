@@ -24,10 +24,10 @@ namespace PRO_1DATOS
 
     public class Estela
     {
-        public NodoEstela Cabeza { get; private set; }
-        public int Longitud { get; private set; }
+        public NodoEstela Cabeza { get;  set; }
+        public int Longitud { get;  set; }
         //public int maxLongitud;
-        public Color color { get; private set; }
+        public Color color { get;  set; }
         public Estela(int xInicial, int yInicial, Color color)
         {
             this.color = color;

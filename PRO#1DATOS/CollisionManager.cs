@@ -5,9 +5,9 @@ namespace PRO_1DATOS
 {
     public class CollisionManager
     {
-        private List<Jugador> jugadores;
-        private List<Bot> bots;
-        private List<Explosion> explosiones;
+        public List<Jugador> jugadores;
+        public List<Bot> bots;
+        public List<Explosion> explosiones;
 
         public CollisionManager(List<Jugador> jugadores, List<Bot> bots)
         {
@@ -71,7 +71,6 @@ namespace PRO_1DATOS
             return false;
         }
 
-
         private bool VerificarColisionConEstela(Jugador jugador, Estela estela)
         {
             var nodoActual = estela.Cabeza;
@@ -99,6 +98,16 @@ namespace PRO_1DATOS
             return false;
         }
 
+        // Método corregido para agregar explosiones
+        public void AddExplosion(Explosion explosion)
+        {
+            explosiones.Add(explosion);
+        }
+
+        public void RemoveBot(Bot bot)
+        {
+            bots.Remove(bot);
+        }
 
         public void DrawExplosions(Graphics g)
         {
@@ -106,8 +115,6 @@ namespace PRO_1DATOS
             {
                 explosion.Draw(g);
             }
-
-            explosiones.RemoveAll(exp => exp.IsComplete);
         }
     }
 }

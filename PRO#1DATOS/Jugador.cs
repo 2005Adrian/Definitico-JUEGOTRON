@@ -9,15 +9,15 @@ namespace PRO_1DATOS
 {
     public class Jugador
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public int X { get;  set; }
+        public int Y { get;  set; }
         public Image MotoImagen { get; set; }
         public Estela Estela { get; set; }
-        private int offsetX;
-        private int offsetY;
-        private int gridWidth;  // Ancho total de la cuadrícula en píxeles
-        private int gridHeight; // Alto total de la cuadrícula en píxeles
-        private int cellSize;   // Tamaño de cada celda (asumimos que es cuadrada)
+        public int offsetX;
+        public int offsetY;
+        public int gridWidth;  // Ancho total de la cuadrícula en píxeles
+        public int gridHeight; // Alto total de la cuadrícula en píxeles
+        public int cellSize;   // Tamaño de cada celda (asumimos que es cuadrada)
 
         public Jugador(int x, int y, Image motoImagen, int offsetX, int offsetY, int gridWidth, int gridHeight, int cellSize = 20, Color? colorEstela = null)
         {
