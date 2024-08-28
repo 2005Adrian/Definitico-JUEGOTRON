@@ -26,9 +26,12 @@ namespace PRO_1DATOS
     {
         public NodoEstela Cabeza { get; private set; }
         public int Longitud { get; private set; }
+        public int maxLongitud;
+        public Color color { get; private set; }
+        public Estela(int xInicial, int yInicial, Color color)
 
-        public Estela(int xInicial, int yInicial)
         {
+            this.color = color;
             // Crear la estela inicial con 3 posiciones
             Cabeza = new NodoEstela(xInicial, yInicial);
             NodoEstela segundoNodo = new NodoEstela(xInicial, yInicial + 10);
@@ -38,6 +41,7 @@ namespace PRO_1DATOS
             segundoNodo.Siguiente = tercerNodo;
 
             Longitud = 3;
+            maxLongitud = 15;
         }
 
         public void AgregarNodo(int x, int y)
@@ -46,6 +50,11 @@ namespace PRO_1DATOS
             nuevoNodo.Siguiente = Cabeza;
             Cabeza = nuevoNodo;
             Longitud++;
+
+            if (Longitud > maxLongitud)
+            {
+                EliminarUltimoNodo();
+            }
         }
 
         public void EliminarUltimoNodo()
@@ -67,7 +76,10 @@ namespace PRO_1DATOS
             NodoEstela nodoActual = Cabeza;
             while (nodoActual != null)
             {
-                g.FillRectangle(Brushes.Cyan, nodoActual.X, nodoActual.Y, 10, 10);
+                using (Brush brush = new SolidBrush(this.color)) // Usamos el color personalizado
+                {
+                    g.FillRectangle(brush, nodoActual.X, nodoActual.Y, 10, 10);
+                }
                 nodoActual = nodoActual.Siguiente;
             }
         }
