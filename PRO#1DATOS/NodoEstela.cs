@@ -26,23 +26,20 @@ namespace PRO_1DATOS
     {
         public NodoEstela Cabeza { get; private set; }
         public int Longitud { get; private set; }
-        public int maxLongitud;
+        //public int maxLongitud;
         public Color color { get; private set; }
         public Estela(int xInicial, int yInicial, Color color)
-
         {
             this.color = color;
-            // Crear la estela inicial con 3 posiciones
             Cabeza = new NodoEstela(xInicial, yInicial);
-            NodoEstela segundoNodo = new NodoEstela(xInicial, yInicial + 10);
-            NodoEstela tercerNodo = new NodoEstela(xInicial, yInicial + 20);
+            Longitud = 1;
 
+            // Asegúrate de que la estela del jugador no colisione consigo misma al iniciar
+            NodoEstela segundoNodo = new NodoEstela(xInicial, yInicial + 20); // Estela se extiende lejos del jugador
             Cabeza.Siguiente = segundoNodo;
-            segundoNodo.Siguiente = tercerNodo;
-
-            Longitud = 3;
-            maxLongitud = 15;
+            Longitud++;
         }
+
 
         public void AgregarNodo(int x, int y)
         {
@@ -50,26 +47,22 @@ namespace PRO_1DATOS
             nuevoNodo.Siguiente = Cabeza;
             Cabeza = nuevoNodo;
             Longitud++;
-
-            if (Longitud > maxLongitud)
-            {
-                EliminarUltimoNodo();
-            }
         }
 
-        public void EliminarUltimoNodo()
-        {
-            if (Cabeza == null) return;
+        ///public void EliminarUltimoNodo()
+        ///{
+           // if (Cabeza == null) return;
 
-            NodoEstela actual = Cabeza;
-            while (actual.Siguiente?.Siguiente != null)
-            {
-                actual = actual.Siguiente;
-            }
+           // NodoEstela actual = Cabeza;
+            //while (actual.Siguiente?.Siguiente != null)
+            //{
+               // actual = actual.Siguiente;
+           // }
 
-            actual.Siguiente = null;
-            Longitud--;
-        }
+            //actual.Siguiente = null;
+           // Longitud--;
+        //}
+        
 
         public void DibujarEstela(Graphics g)
         {

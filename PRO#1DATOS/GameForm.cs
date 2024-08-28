@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
-
 namespace PRO_1DATOS
 {
     public partial class GameForm : Form
@@ -13,6 +14,9 @@ namespace PRO_1DATOS
         private int gridWidth;
         private int gridHeight;
         private System.Windows.Forms.Timer timer;
+        private CollisionManager collisionManager;
+        private Random random;
+        private bool gameOver = false; // Esta es la variable que indica si el juego ha terminado
 
 
         public GameForm()
@@ -21,6 +25,7 @@ namespace PRO_1DATOS
             InicializarJuego();
             this.BackColor = Color.Black;
 
+            random = new Random();
             // Crear la imagen de la moto programáticamente
             Image motoImagen = CrearImagenMoto(40, 40, Color.Red); // Tamaño de 40x40 píxeles
 
@@ -47,10 +52,15 @@ namespace PRO_1DATOS
             bots = new List<Bot>();
             for (int i = 0; i < 5; i++)
             {
-                Image botImagen = CrearImagenMoto(20, 20, GetBotColor(i));
-                Bot bot = new Bot(startX, startY, botImagen, GetBotColor(i), offsetX, offsetY, gridWidth, gridHeight, 20);
+                Color botColor = GetBotColor(i);
+                int botStartX = offsetX + random.Next(columnas) * 20;
+                int botStartY = offsetY + random.Next(filas) * 20;
+                Image botImagen = CrearImagenMoto(20, 20, botColor);
+                Bot bot = new Bot(botStartX, botStartY, botImagen, botColor, offsetX, offsetY, gridWidth, gridHeight, 20);
                 bots.Add(bot);
             }
+
+            collisionManager = new CollisionManager(new List<Jugador> { jugador }, bots);
 
 
 
@@ -69,19 +79,48 @@ namespace PRO_1DATOS
 
         private void MoverBots()
         {
-            foreach (var bot in bots)
+            // Añadir un retardo inicial para evitar la colisión inmediata
+            if (timer.Interval == 100) // Intervalo inicial
             {
-                bot.MoverHaciaJugador(jugador);
+                timer.Interval = 500; // Aumenta el intervalo después del primer tick
+            }
+            if (gameOver) return;
+
+            foreach (var bot in bots.ToList())
+            {
+                bot.MoverAleatorio();
+
+                if (collisionManager.CheckCollisions(bot))
+                {
+                    bots.Remove(bot);
+                }
             }
 
-            Invalidate(); // Forzar el redibujado del formulario para reflejar el movimiento de los bots
+
+            if (bots.Count == 0 && !gameOver)
+            {
+                gameOver = true;
+                MessageBox.Show("¡Has ganado!");
+                this.Close();
+                return;
+            }
+
+            if (collisionManager.CheckCollisions(jugador))
+            {
+                // Asegúrate de que el juego se detiene después de la primera colisión
+                if (!gameOver)
+                {
+                    gameOver = true; // Marca el juego como terminado
+                    MessageBox.Show("Has perdido!");
+                    this.Close();
+                }
+                return;
+            }
+
+
+            Invalidate();
         }
 
-        private Color GetBotColor(int index)
-        {
-            Color[] colors = { Color.Blue, Color.Green, Color.Yellow, Color.Purple, Color.Orange };
-            return colors[index % colors.Length];
-        }
 
         private void GameForm_Load(object sender, EventArgs e)
         {
@@ -89,25 +128,46 @@ namespace PRO_1DATOS
         }
         private void InicializarJuego()
         {
+            random = new Random();
+
             // Definir el tamaño de la cuadrícula en celdas
-            int filas = 20; // Ajusta el número de filas según tus necesidades
-            int columnas = 25; // Ajusta el número de columnas según tus necesidades
+            int filas = this.ClientSize.Height / 20;
+            int columnas = 25;
 
             // Calcular el ancho y alto de la cuadrícula en píxeles
-            gridWidth = columnas * 20; // 20 píxeles por celda
-            gridHeight = filas * 20;
+            int gridWidth = columnas * 20;
+            int gridHeight = filas * 20;
 
-            // Calcular el desplazamiento para centrar la cuadrícula en el formulario
             int offsetX = (this.ClientSize.Width - gridWidth) / 2;
-            int offsetY = (this.ClientSize.Height - gridHeight) / 2;
-
-            // Crear la cuadrícula centrada en el formulario
+            int offsetY = 0;
             listaEnlazada = new ListaEnlazadaRectangulos(filas, columnas, offsetX, offsetY);
 
-            // Crear instancia del jugador en el centro inferior de la cuadrícula
-            int startX = offsetX + (columnas / 2) * 20;  // Centro horizontal de la cuadrícula
-            int startY = offsetY + (filas - 1) * 20;     // Posición en la última fila de la cuadrícula
-            jugador = new Jugador(startX, startY, motoImagen, offsetX, offsetY, gridWidth, gridHeight);
+
+            // Crear instancia del jugador en la posición inicial segura
+            // Crear instancia del jugador en una posición segura
+            int playerStartX = offsetX + (gridWidth / 2) - 20;
+            int playerStartY = gridHeight - 60;
+            jugador = new Jugador(playerStartX, playerStartY, CrearImagenMoto(40, 40, Color.Red), offsetX, offsetY, gridWidth, gridHeight, 20);
+
+            // Crear bots en posiciones aleatorias seguras
+            bots = new List<Bot>();
+            for (int i = 0; i < 5; i++)
+            {
+                Color botColor = GetBotColor(i);
+                int botStartX, botStartY;
+                do
+                {
+                    botStartX = offsetX + random.Next(columnas) * 20;
+                    botStartY = offsetY + random.Next(filas) * 20;
+                } while ((botStartX == playerStartX && botStartY == playerStartY) ||
+                         bots.Any(b => b.X == botStartX && b.Y == botStartY));
+
+                Image botImagen = CrearImagenMoto(20, 20, botColor);
+                Bot bot = new Bot(botStartX, botStartY, botImagen, botColor, offsetX, offsetY, gridWidth, gridHeight, 20);
+                bots.Add(bot);
+            }
+
+            collisionManager = new CollisionManager(new List<Jugador> { jugador }, bots);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -131,6 +191,7 @@ namespace PRO_1DATOS
 
                 e.Graphics.DrawImage(bot.MotoImagen, bot.X, bot.Y, 20, 20);
             }
+            collisionManager.DrawExplosions(e.Graphics);
 
         }
 
@@ -167,6 +228,12 @@ namespace PRO_1DATOS
                 g.FillRectangle(brush, 0, 0, width, height);
             }
             return bmp;
+        }
+
+        private Color GetBotColor(int index)
+        {
+            Color[] colors = { Color.Blue, Color.Green, Color.Yellow, Color.Purple, Color.Orange };
+            return colors[index % colors.Length];
         }
 
     }
