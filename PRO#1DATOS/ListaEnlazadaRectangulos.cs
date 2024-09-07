@@ -1,38 +1,34 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PRO_1DATOS
 {
     public class ListaEnlazadaRectangulos
     {
-        public RectanguloNodo[,] Matriz { get;  set; }
+        public List<RectanguloNodo> Matriz { get; set; }
 
-        public ListaEnlazadaRectangulos(int filas, int columnas, int offsetX = 0, int offsetY = 0)
+        public ListaEnlazadaRectangulos(int filas, int columnas, int offsetX, int offsetY)
         {
-            Matriz = new RectanguloNodo[filas, columnas];
-            CrearMatriz(filas, columnas, offsetX, offsetY);
-        }
+            Matriz = new List<RectanguloNodo>();
 
-        private void CrearMatriz(int filas, int columnas, int offsetX, int offsetY)
-        {
-            for (int i = 0; i < filas; i++)
+            for (int fila = 0; fila < filas; fila++)
             {
-                for (int j = 0; j < columnas; j++)
+                for (int columna = 0; columna < columnas; columna++)
                 {
-                    Matriz[i, j] = new RectanguloNodo(offsetX + j * 20, offsetY + i * 20, 20, 20);
-
-                    // Conectar los nodos adyacentes
-                    if (i > 0)
-                    {
-                        Matriz[i, j].Arriba = Matriz[i - 1, j];
-                        Matriz[i - 1, j].Abajo = Matriz[i, j];
-                    }
-                    if (j > 0)
-                    {
-                        Matriz[i, j].Izquierda = Matriz[i, j - 1];
-                        Matriz[i, j - 1].Derecha = Matriz[i, j];
-                    }
+                    int x = offsetX + columna * 20;
+                    int y = offsetY + fila * 20;
+                    RectanguloNodo nodo = new RectanguloNodo(x, y, 20, 20);
+                    Matriz.Add(nodo);
                 }
             }
+        }
+
+        // This method will select a random node from the Matriz
+        public RectanguloNodo ObtenerNodoAleatorio()
+        {
+            Random random = new Random();
+            int indexAleatorio = random.Next(Matriz.Count); // Get a random index
+            return Matriz[indexAleatorio];
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 
 namespace PRO_1DATOS
 {
@@ -11,6 +10,7 @@ namespace PRO_1DATOS
         Left,
         Right
     }
+
     public class Bot : Jugador
     {
         private static Random random = new Random();
@@ -28,7 +28,6 @@ namespace PRO_1DATOS
         {
             // Decidir si cambiar de dirección
             int decision = random.Next(100);
-
             if (decision < 20) // 20% de probabilidad de cambiar de dirección
             {
                 currentDirection = GetNewDirection();
@@ -67,6 +66,13 @@ namespace PRO_1DATOS
             }
         }
 
+        public void RecogerPoder(Poderes poder)
+        {
+            base.RecogerPoder(poder); // Llama al método de la clase base (Jugador)
+        }
+
+
+
         private Direction GetRandomDirection()
         {
             return (Direction)random.Next(4);
@@ -92,7 +98,7 @@ namespace PRO_1DATOS
                    (currentDirection == Direction.Right && newDirection == Direction.Left);
         }
 
-        private void Explode()
+        public void Explode()
         {
             collisionManager.AddExplosion(new Explosion(X, Y));
             collisionManager.RemoveBot(this);
@@ -102,8 +108,10 @@ namespace PRO_1DATOS
         {
             int celdasRecorridas = Velocidad * 5;
             Combustible -= celdasRecorridas / 5;
-            if (Combustible < 0) Combustible = 0;
+            if (Combustible <= 0)
+            {
+                Explode();  // Si se queda sin combustible, explota
+            }
         }
     }
 }
-

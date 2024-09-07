@@ -99,6 +99,7 @@ namespace PRO_1DATOS
             return false;
         }
 
+
         // Método corregido para agregar explosiones
         public void AddExplosion(Explosion explosion)
         {

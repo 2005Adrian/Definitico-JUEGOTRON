@@ -124,34 +124,31 @@
   <data name="4df20992-e2ce-4dd5-988d-0bf2c205ed13" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\4df20992-e2ce-4dd5-988d-0bf2c205ed131.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Image1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Image1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="225fc3bd-78a4-4b35-974f-6af2f7f9d9da" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\225fc3bd-78a4-4b35-974f-6af2f7f9d9da.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="bomba" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bomba (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="bot" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\moto1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="combustible" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\jerry-puede (2).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="corazon (1)" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\corazon (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="crecimiento_estela" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\aumentar (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bomba" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bomba.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="escudo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\proteger (1) (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="combustible" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\combustible.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crecimiento_estela" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crecimiento_estela.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gasolina" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\jerry-puede (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\gasolina.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="hiper_velocidad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\velocimetro (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\hiper_velocidad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="escudo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\escudo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
