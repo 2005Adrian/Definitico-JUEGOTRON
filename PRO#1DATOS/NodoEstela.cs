@@ -7,7 +7,6 @@ using System.Drawing;
 
 namespace PRO_1DATOS
 {
-
     public class NodoEstela
     {
         public int X { get; set; }
@@ -24,57 +23,45 @@ namespace PRO_1DATOS
 
     public class Estela
     {
-        public NodoEstela Cabeza { get;  set; }
-        public int Longitud { get;  set; }
-        //public int maxLongitud;
-        public Color color { get;  set; }
-        public Estela(int xInicial, int yInicial, Color color)
+        public NodoEstela Cabeza { get; private set; }
+        private int longitudMaxima;
+        private Color color;
+
+        public Estela(int xInicial, int yInicial, int longitudMaxima, Color color)
         {
             this.color = color;
+            this.longitudMaxima = longitudMaxima;
             Cabeza = new NodoEstela(xInicial, yInicial);
-            Longitud = 1;
-
-            // Asegúrate de que la estela del jugador no colisione consigo misma al iniciar
-            NodoEstela segundoNodo = new NodoEstela(xInicial, yInicial + 20); // Estela se extiende lejos del jugador
-            Cabeza.Siguiente = segundoNodo;
-            Longitud++;
         }
-
 
         public void AgregarNodo(int x, int y)
         {
             NodoEstela nuevoNodo = new NodoEstela(x, y);
             nuevoNodo.Siguiente = Cabeza;
             Cabeza = nuevoNodo;
-            Longitud++;
         }
-
-        ///public void EliminarUltimoNodo()
-        ///{
-           // if (Cabeza == null) return;
-
-           // NodoEstela actual = Cabeza;
-            //while (actual.Siguiente?.Siguiente != null)
-            //{
-               // actual = actual.Siguiente;
-           // }
-
-            //actual.Siguiente = null;
-           // Longitud--;
-        //}
-        
 
         public void DibujarEstela(Graphics g)
         {
             NodoEstela nodoActual = Cabeza;
             while (nodoActual != null)
             {
-                using (Brush brush = new SolidBrush(this.color)) // Usamos el color personalizado
-                {
-                    g.FillRectangle(brush, nodoActual.X, nodoActual.Y, 10, 10);
-                }
+                g.FillRectangle(new SolidBrush(color), nodoActual.X, nodoActual.Y, 20, 20);
                 nodoActual = nodoActual.Siguiente;
             }
         }
+        public void  Crecer(int incremento)
+        {
+            NodoEstela nodoActual = Cabeza;
+            for (int i = 0; i < incremento; i++)
+            {
+                if (nodoActual != null)
+                {
+                    AgregarNodo(nodoActual.X, nodoActual.Y);
+
+                }
+            }
+        }
+
     }
 }

@@ -21,7 +21,7 @@ namespace PRO_1DATOS
             // Verificar colisión con estelas de todos los jugadores y bots
             foreach (var otroJugador in jugadores)
             {
-                if (VerificarColisionConEstela(jugador, otroJugador.Estela))
+                if (otroJugador != null && VerificarColisionConEstela(jugador, otroJugador.Estela))
                 {
                     explosiones.Add(new Explosion(jugador.X, jugador.Y));
                     return true;
@@ -30,7 +30,7 @@ namespace PRO_1DATOS
 
             foreach (var bot in bots)
             {
-                if (VerificarColisionConEstela(jugador, bot.Estela))
+                if (bot != null && VerificarColisionConEstela(jugador, bot.Estela))
                 {
                     explosiones.Add(new Explosion(jugador.X, jugador.Y));
                     return true;
@@ -39,6 +39,7 @@ namespace PRO_1DATOS
 
             return false;
         }
+
 
         public bool CheckCollisions(Bot bot)
         {
@@ -108,7 +109,10 @@ namespace PRO_1DATOS
         {
             bots.Remove(bot);
         }
-
+        public void RemoveJugador(Jugador jugador)
+        {
+            jugadores.Remove(jugador);
+        }
         public void DrawExplosions(Graphics g)
         {
             foreach (var explosion in explosiones)

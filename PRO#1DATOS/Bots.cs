@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 
 namespace PRO_1DATOS
-
 {
     public enum Direction
     {
@@ -12,7 +11,6 @@ namespace PRO_1DATOS
         Left,
         Right
     }
-
     public class Bot : Jugador
     {
         private static Random random = new Random();
@@ -20,7 +18,7 @@ namespace PRO_1DATOS
         private CollisionManager collisionManager;
 
         public Bot(int x, int y, Image motoImagen, Color color, int offsetX, int offsetY, int gridWidth, int gridHeight, int cellSize, CollisionManager collisionManager)
-            : base(x, y, motoImagen, offsetX, offsetY, gridWidth, gridHeight, cellSize)
+        : base(x, y, motoImagen, offsetX, offsetY, gridWidth, gridHeight, cellSize, color, collisionManager)
         {
             this.collisionManager = collisionManager;
             currentDirection = GetRandomDirection();
@@ -54,9 +52,18 @@ namespace PRO_1DATOS
             }
 
             // Verificar colisión con los bordes de la cuadrícula
-            if (X <= offsetX || X >= offsetX + gridWidth - cellSize || Y <= offsetY || Y >= offsetY + gridHeight - cellSize)
+            if (X <= OffsetX || X >= OffsetX + GridWidth - CellSize || Y <= OffsetY || Y >= OffsetY + GridHeight - CellSize)
             {
                 Explode(); // El bot explota si choca con el borde
+            }
+
+            // Consumir combustible
+            ConsumirCombustible();
+
+            // Explota si se queda sin combustible
+            if (Combustible <= 0)
+            {
+                Explode();
             }
         }
 
@@ -87,13 +94,16 @@ namespace PRO_1DATOS
 
         private void Explode()
         {
-            // Crear una nueva explosión en la ubicación del bot
             collisionManager.AddExplosion(new Explosion(X, Y));
-
-            // Eliminar el bot de la lista de bots
             collisionManager.RemoveBot(this);
         }
+
+        private void ConsumirCombustible()
+        {
+            int celdasRecorridas = Velocidad * 5;
+            Combustible -= celdasRecorridas / 5;
+            if (Combustible < 0) Combustible = 0;
+        }
     }
-
-
 }
+
