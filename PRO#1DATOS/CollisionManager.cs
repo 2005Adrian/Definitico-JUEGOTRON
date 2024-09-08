@@ -11,35 +11,41 @@ namespace PRO_1DATOS
 
         public CollisionManager(List<Jugador> jugadores, List<Bot> bots)
         {
-            this.jugadores = jugadores ?? new List<Jugador>(); // Inicializar si es nulo
-            this.bots = bots ?? new List<Bot>(); // Inicializar si es nulo
-            this.explosiones = new List<Explosion>();
+            this.jugadores = jugadores ?? new List<Jugador>();
+            this.bots = bots ?? new List<Bot>();
+            this.explosiones = new List<Explosion>(); // Asegúrate de inicializar esta lista
         }
 
         public bool CheckCollisions(Jugador jugador)
         {
-            // Verificar colisión con estelas de todos los jugadores y bots
+            // Verifica las colisiones del jugador con los bots o con las estelas
             foreach (var otroJugador in jugadores)
             {
-                if (otroJugador != null && VerificarColisionConEstela(jugador, otroJugador.Estela))
+                if (jugador != otroJugador && VerificarColisionConEstela(jugador, otroJugador.Estela))
                 {
-                    explosiones.Add(new Explosion(jugador.X, jugador.Y));
+                    RemoveJugador(jugador);
                     return true;
                 }
             }
 
             foreach (var bot in bots)
             {
-                if (bot != null && VerificarColisionConEstela(jugador, bot.Estela))
+                if (VerificarColisionConEstela(jugador, bot.Estela))
                 {
-                    explosiones.Add(new Explosion(jugador.X, jugador.Y));
+                    RemoveJugador(jugador);
                     return true;
                 }
             }
 
+            // Verificar colisión con su propia estela
+            if (VerificarColisionConEstela(jugador, jugador.Estela))
+            {
+                RemoveJugador(jugador);
+                return true;
+            }
+
             return false;
         }
-
 
         public bool CheckCollisions(Bot bot)
         {
@@ -48,7 +54,7 @@ namespace PRO_1DATOS
             {
                 if (otroBot != bot && VerificarColisionConEstela(bot, otroBot.Estela))
                 {
-                    explosiones.Add(new Explosion(bot.X, bot.Y));
+                    RemoveBot(bot);
                     return true;
                 }
             }
@@ -57,7 +63,7 @@ namespace PRO_1DATOS
             {
                 if (VerificarColisionConEstela(bot, jugador.Estela))
                 {
-                    explosiones.Add(new Explosion(bot.X, bot.Y));
+                    RemoveBot(bot);
                     return true;
                 }
             }
@@ -65,12 +71,23 @@ namespace PRO_1DATOS
             // Verificar colisión con su propia estela
             if (VerificarColisionConEstela(bot, bot.Estela))
             {
-                explosiones.Add(new Explosion(bot.X, bot.Y));
+                RemoveBot(bot);
                 return true;
             }
 
             return false;
         }
+
+        public void RemoveJugador(Jugador jugador)
+        {
+            jugadores.Remove(jugador);
+        }
+
+        public void RemoveBot(Bot bot)
+        {
+            bots.Remove(bot);
+        }
+
 
         private bool VerificarColisionConEstela(Jugador jugador, Estela estela)
         {
@@ -99,21 +116,13 @@ namespace PRO_1DATOS
             return false;
         }
 
-
-        // Método corregido para agregar explosiones
         public void AddExplosion(Explosion explosion)
         {
             explosiones.Add(explosion);
         }
 
-        public void RemoveBot(Bot bot)
-        {
-            bots.Remove(bot);
-        }
-        public void RemoveJugador(Jugador jugador)
-        {
-            jugadores.Remove(jugador);
-        }
+        
+
         public void DrawExplosions(Graphics g)
         {
             foreach (var explosion in explosiones)
@@ -121,5 +130,7 @@ namespace PRO_1DATOS
                 explosion.Draw(g);
             }
         }
+        
+
     }
 }

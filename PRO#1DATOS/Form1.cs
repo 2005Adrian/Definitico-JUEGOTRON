@@ -6,9 +6,13 @@ namespace PRO_1DATOS
 {
     public partial class Form1 : Form
     {
+        private List<string> items;
+
         public Form1()
         {
             InitializeComponent();
+            items = new List<string>();
+
         }
 
         public void button1_Click(object sender, EventArgs e)
@@ -32,6 +36,11 @@ namespace PRO_1DATOS
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             // Lógica a ejecutar cuando el texto cambie en textBox1
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

@@ -3,14 +3,6 @@ using System.Drawing;
 
 namespace PRO_1DATOS
 {
-    public enum Direction
-    {
-        Up,
-        Down,
-        Left,
-        Right
-    }
-
     public class Bot : Jugador
     {
         private static Random random = new Random();
@@ -24,7 +16,7 @@ namespace PRO_1DATOS
             currentDirection = GetRandomDirection();
         }
 
-        public void MoverAleatorio()
+        public void MoverAleatorio(GameForm gameForm)
         {
             // Decidir si cambiar de dirección
             int decision = random.Next(100);
@@ -37,16 +29,16 @@ namespace PRO_1DATOS
             switch (currentDirection)
             {
                 case Direction.Up:
-                    MoverArriba();
+                    MoverArriba(gameForm);
                     break;
                 case Direction.Right:
-                    MoverDerecha();
+                    MoverDerecha(gameForm);
                     break;
                 case Direction.Down:
-                    MoverAbajo();
+                    MoverAbajo(gameForm);
                     break;
                 case Direction.Left:
-                    MoverIzquierda();
+                    MoverIzquierda(gameForm);
                     break;
             }
 
@@ -56,22 +48,14 @@ namespace PRO_1DATOS
                 Explode(); // El bot explota si choca con el borde
             }
 
-            // Consumir combustible
-            ConsumirCombustible();
-
-            // Explota si se queda sin combustible
-            if (Combustible <= 0)
-            {
-                Explode();
-            }
+            // No consumir combustible para los bots
+            // Los bots tienen combustible infinito
         }
 
         public void RecogerPoder(Poderes poder)
         {
             base.RecogerPoder(poder); // Llama al método de la clase base (Jugador)
         }
-
-
 
         private Direction GetRandomDirection()
         {
@@ -102,16 +86,6 @@ namespace PRO_1DATOS
         {
             collisionManager.AddExplosion(new Explosion(X, Y));
             collisionManager.RemoveBot(this);
-        }
-
-        private void ConsumirCombustible()
-        {
-            int celdasRecorridas = Velocidad * 5;
-            Combustible -= celdasRecorridas / 5;
-            if (Combustible <= 0)
-            {
-                Explode();  // Si se queda sin combustible, explota
-            }
         }
     }
 }

@@ -47,6 +47,7 @@ namespace PRO_1DATOS
             pictureBox1.Size = new Size(1030, 883);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
             // 
             // button1
             // 

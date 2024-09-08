@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace PRO_1DATOS
@@ -44,9 +45,9 @@ namespace PRO_1DATOS
             shieldTimer.Interval = 20000; // 20 segundos
             shieldTimer.Tick += (s, e) => DesactivarEscudo();
 
-            // Inicializar el temporizador para hiper velocidad
             hiperVelocidadTimer = new System.Windows.Forms.Timer();
-            hiperVelocidadTimer.Tick += (s, e) => DesactivarHiperVelocidad(); // Volver a la velocidad normal
+            hiperVelocidadTimer.Interval = 10000; // Hiper velocidad durante 10 segundos
+            hiperVelocidadTimer.Tick += (s, e) => DesactivarHiperVelocidad();
         }
 
         public void RecogerPoder(Poderes poder)
@@ -131,51 +132,81 @@ namespace PRO_1DATOS
             hiperVelocidadTimer.Stop(); // Detener el temporizador
         }
 
-        public void MoverIzquierda()
+        public void MoverIzquierda(GameForm gameForm)
         {
-            X -= CellSize;
-            ConsumirCombustible();
-            RevisarColisionesConItems();
+            if (X - CellSize >= OffsetX && Combustible > 0)  // Asegurarnos de que solo se pueda mover si hay combustible
+            {
+                X -= CellSize;
+                Estela.AgregarNodo(X + CellSize / 2, Y + CellSize / 2);  // Ajusta la posición de la estela al centro de la celda
+                ConsumirCombustible(); // Consumir combustible solo al moverse
+                RevisarColisionesConItems(gameForm);
+                if (collisionManager.CheckCollisions(this)) Explode();
+            }
         }
 
-        public void MoverDerecha()
+        public void MoverDerecha(GameForm gameForm)
         {
-            X += CellSize;
-            ConsumirCombustible();
-            RevisarColisionesConItems();
+            if (X + CellSize < OffsetX + GridWidth && Combustible > 0)  // Asegurarnos de que solo se pueda mover si hay combustible
+            {
+                X += CellSize;
+                Estela.AgregarNodo(X + CellSize / 2, Y + CellSize / 2);  // Ajusta la posición de la estela al centro de la celda
+                ConsumirCombustible(); // Consumir combustible solo al moverse
+                RevisarColisionesConItems(gameForm);
+                if (collisionManager.CheckCollisions(this)) Explode();
+            }
         }
 
-        public void MoverArriba()
+       
+
+        public void MoverArriba(GameForm gameForm)
         {
-            Y -= CellSize;
-            ConsumirCombustible();
-            RevisarColisionesConItems();
+            if (Y - CellSize >= OffsetY && Combustible > 0)  // Asegurarnos de que solo se pueda mover si hay combustible
+            {
+                Y -= CellSize;
+                Estela.AgregarNodo(X + CellSize / 2, Y + CellSize / 2);  // Ajusta la posición de la estela al centro de la celda
+                ConsumirCombustible(); // Consumir combustible solo al moverse
+                RevisarColisionesConItems(gameForm);
+                if (collisionManager.CheckCollisions(this)) Explode();
+            }
         }
 
-        public void MoverAbajo()
+
+        public void MoverAbajo(GameForm gameForm)
         {
-            Y += CellSize;
-            ConsumirCombustible();
-            RevisarColisionesConItems();
+            if (Y + CellSize < OffsetY + GridHeight && Combustible > 0)  // Asegurarnos de que solo se pueda mover si hay combustible
+            {
+                Y += CellSize;
+                Estela.AgregarNodo(X + CellSize / 2, Y + CellSize / 2);  // Ajusta la posición de la estela al centro de la celda
+                ConsumirCombustible(); // Consumir combustible solo al moverse
+                RevisarColisionesConItems(gameForm);
+                if (collisionManager.CheckCollisions(this)) Explode();
+            }
         }
+
 
         public void ConsumirCombustible()
         {
-            Combustible -= 1;
-            if (Combustible <= 0)
+            if (Combustible > 0)
             {
-                Explode();
+                Combustible -= 1;
+                if (Combustible <= 0)
+                {
+                    Explode();
+                }
             }
         }
+
+
 
         public void Explode()
         {
             // Implementación de la explosión
         }
 
-        public void RevisarColisionesConItems()
+        public void RevisarColisionesConItems(GameForm gameform)
         {
-            var items = ((GameForm)Form.ActiveForm).items;
+            var items = gameform.items; // Ahora se accede directamente a los ítems del GameForm
+
             for (int i = items.Count - 1; i >= 0; i--)
             {
                 if (X == items[i].Posicion.X && Y == items[i].Posicion.Y)
@@ -185,5 +216,6 @@ namespace PRO_1DATOS
                 }
             }
         }
+
     }
 }
