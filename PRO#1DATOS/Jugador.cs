@@ -54,20 +54,20 @@ namespace PRO_1DATOS
                 Poderes poder = Inventario[index];
                 switch (poder.Tipo)
                 {
-                    case "Celda de Combustible":
+                    case "combustible":
                         Combustible += poder.Valor;
                         if (Combustible > 100) Combustible = 100; // Limitar a 100
                         break;
-                    case "Crecimiento de Estela":
+                    case "crecimiento_estela":
                         Estela.Crecer(10);
                         break;
-                    case "Bomba":
+                    case "bomba":
                         Explode();  // Explota si usa una bomba
                         break;
-                    case "Escudo":
+                    case "escudo":
                         ActivarEscudo(poder.Valor);  // Activa escudo por un tiempo
                         break;
-                    case "Hiper Velocidad":
+                    case "hiper_velocidad":
                         ActivarHiperVelocidad(poder.Valor);  // Incrementar velocidad temporalmente
                         break;
                 }
@@ -151,6 +151,22 @@ namespace PRO_1DATOS
         {
             Estela.AgregarNodo(X, Y);
         }
+
+        public void RevisarColisionesConItems(List<Poderes> items)
+        {
+            // Recorrer todos los ítems en la lista para verificar si el jugador colisiona con ellos
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                // Si la posición del jugador coincide con la posición del ítem
+                if (X == items[i].Posicion.X && Y == items[i].Posicion.Y)
+                {
+                    Console.WriteLine($"Recogido poder: {items[i].Tipo} en la posición {items[i].Posicion.X}, {items[i].Posicion.Y}");
+                    RecogerPoder(items[i]);  // Recoge el poder
+                    items.RemoveAt(i);  // Elimina el ítem de la lista una vez recogido
+                }
+            }
+        }
+
     }
 
 
