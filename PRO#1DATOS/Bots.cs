@@ -1,8 +1,16 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 
 namespace PRO_1DATOS
 {
+    public enum Direction
+    {
+        Up,
+        Down,
+        Left,
+        Right
+    }
     public class Bot : Jugador
     {
         private static Random random = new Random();
@@ -16,10 +24,11 @@ namespace PRO_1DATOS
             currentDirection = GetRandomDirection();
         }
 
-        public void MoverAleatorio(GameForm gameForm)
+        public void MoverAleatorio()
         {
             // Decidir si cambiar de dirección
             int decision = random.Next(100);
+
             if (decision < 20) // 20% de probabilidad de cambiar de dirección
             {
                 currentDirection = GetNewDirection();
@@ -29,16 +38,16 @@ namespace PRO_1DATOS
             switch (currentDirection)
             {
                 case Direction.Up:
-                    MoverArriba(gameForm);
+                    MoverArriba();
                     break;
                 case Direction.Right:
-                    MoverDerecha(gameForm);
+                    MoverDerecha();
                     break;
                 case Direction.Down:
-                    MoverAbajo(gameForm);
+                    MoverAbajo();
                     break;
                 case Direction.Left:
-                    MoverIzquierda(gameForm);
+                    MoverIzquierda();
                     break;
             }
 
@@ -48,13 +57,14 @@ namespace PRO_1DATOS
                 Explode(); // El bot explota si choca con el borde
             }
 
-            // No consumir combustible para los bots
-            // Los bots tienen combustible infinito
-        }
+            // Consumir combustible
+            ConsumirCombustible();
 
-        public void RecogerPoder(Poderes poder)
-        {
-            base.RecogerPoder(poder); // Llama al método de la clase base (Jugador)
+            // Explota si se queda sin combustible
+            if (Combustible <= 0)
+            {
+                Explode();
+            }
         }
 
         private Direction GetRandomDirection()
@@ -82,10 +92,18 @@ namespace PRO_1DATOS
                    (currentDirection == Direction.Right && newDirection == Direction.Left);
         }
 
-        public void Explode()
+        private void Explode()
         {
             collisionManager.AddExplosion(new Explosion(X, Y));
             collisionManager.RemoveBot(this);
         }
+
+        private void ConsumirCombustible()
+        {
+            int celdasRecorridas = Velocidad * 5;
+            Combustible -= celdasRecorridas / 5;
+            if (Combustible < 0) Combustible = 0;
+        }
     }
 }
+

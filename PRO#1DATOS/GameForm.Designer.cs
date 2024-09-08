@@ -1,11 +1,6 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace PRO_1DATOS
+﻿namespace PRO_1DATOS
 {
-    partial class GameForm : Form
+    partial class GameForm
     {
         /// <summary>
         /// Required designer variable.
@@ -33,27 +28,19 @@ namespace PRO_1DATOS
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
+            SuspendLayout();
             // 
             // GameForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1052, 778);
-            this.Name = "GameForm";
-            this.Text = "GameForm";
-            this.Load += new System.EventHandler(this.GameForm_Load);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(940, 760);
+            Name = "GameForm";
+            Text = "GameForm";
+            Load += GameForm_Load;
+            ResumeLayout(false);
         }
 
         #endregion
-
-        private TextBox textBox1;
-        private Panel panel1;
-        private Panel panel2;
-        private Panel panel3;
-        public EventHandler GameTron_Load { get; private set; }
-
-
     }
-} 
+}

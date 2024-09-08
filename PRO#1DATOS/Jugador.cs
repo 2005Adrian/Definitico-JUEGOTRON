@@ -19,203 +19,139 @@ namespace PRO_1DATOS
         public int CellSize { get; set; }
         public List<Poderes> Inventario { get; set; }
         public CollisionManager collisionManager { get; set; }
+
         public Color Motocolor { get; set; }
-        private bool escudoActivo { get; set; }
-        private System.Windows.Forms.Timer shieldTimer;
-        private System.Windows.Forms.Timer hiperVelocidadTimer;
 
         public Jugador(int x, int y, Image motoImagen, int offsetX, int offsetY, int gridWidth, int gridHeight, int cellSize, Color color, CollisionManager collisionManager)
         {
             X = x;
             Y = y;
             MotoImagen = motoImagen;
-            Estela = new Estela(x, y, 3, color);
-            Velocidad = new Random().Next(1, 11);
-            Combustible = 100;
+            Estela = new Estela(x, y, 3, color); // Ajusta esto si es necesario
+            Velocidad = new Random().Next(1, 11); // Velocidad aleatoria entre 1 y 10
+            Combustible = 100; // Combustible inicial al máximo
             OffsetX = offsetX;
             OffsetY = offsetY;
             GridWidth = gridWidth;
             GridHeight = gridHeight;
             CellSize = cellSize;
+            Combustible = 100;
+            Motocolor = color;
             Inventario = new List<Poderes>();
             this.collisionManager = collisionManager;
-
-            escudoActivo = false;
-            shieldTimer = new System.Windows.Forms.Timer();
-            shieldTimer.Interval = 20000; // 20 segundos
-            shieldTimer.Tick += (s, e) => DesactivarEscudo();
-
-            hiperVelocidadTimer = new System.Windows.Forms.Timer();
-            hiperVelocidadTimer.Interval = 10000; // Hiper velocidad durante 10 segundos
-            hiperVelocidadTimer.Tick += (s, e) => DesactivarHiperVelocidad();
         }
 
         public void RecogerPoder(Poderes poder)
         {
-            if (poder.Tipo == "combustible")
-            {
-                Combustible += poder.Valor;
-                if (Combustible > 100) Combustible = 100;
-            }
-            else
-            {
-                Inventario.Add(poder);
-            }
+            Inventario.Add(poder);
         }
+
 
         public void UsarPoder(int index)
         {
-            if (index >= 0 && index < Inventario.Count)
+            if (index < 0 && index < Inventario.Count)
             {
                 Poderes poder = Inventario[index];
                 switch (poder.Tipo)
                 {
-                    case "combustible":
+                    case "Celda de Combustible":
                         Combustible += poder.Valor;
-                        if (Combustible > 100) Combustible = 100;
+                        if (Combustible > 100) Combustible = 100; // Limitar a 100
                         break;
-                    case "crecimiento_estela":
-                        ActivarCrecimientoEstela(10);
+                    case "Crecimiento de Estela":
+                        Estela.Crecer(10);
                         break;
-                    case "bomba":
-                        Explode();
+                    case "Bomba":
+                        Explode();  // Explota si usa una bomba
                         break;
-                    case "escudo":
-                        ActivarEscudo(poder.Valor);
+                    case "Escudo":
+                        ActivarEscudo(poder.Valor);  // Activa escudo por un tiempo
                         break;
-                    case "hiper_velocidad":
-                        ActivarHiperVelocidad(poder.Valor);
+                    case "Hiper Velocidad":
+                        ActivarHiperVelocidad(poder.Valor);  // Incrementar velocidad temporalmente
                         break;
                 }
-                Inventario.RemoveAt(index);
+                Inventario.RemoveAt(index);  // Eliminar el ítem usado del inventario
             }
         }
 
+
         public void ActivarEscudo(int duracion)
         {
-            escudoActivo = true;
-            MotoImagen = Recursos.ObtenerImagen("escudo");
-            shieldTimer.Start();
-        }
 
-        public void DesactivarEscudo()
-        {
-            escudoActivo = false;
-            MotoImagen = Recursos.ObtenerImagen("moto"); // Volver a la imagen original
-            shieldTimer.Stop();
-        }
-
-        public void ActivarCrecimientoEstela(int incremento)
-        {
-            Estela.Crecer(incremento);
-            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-            timer.Interval = 30000;
-            timer.Tick += (s, e) => ReducirEstela(incremento);
-            timer.Start();
-        }
-
-        private void ReducirEstela(int decremento)
-        {
-            Estela.Reducir(decremento);
         }
 
         public void ActivarHiperVelocidad(int incremento)
         {
             Velocidad += incremento;
-            hiperVelocidadTimer.Interval = 15000; // La hiper velocidad dura 15 segundos
-            hiperVelocidadTimer.Start(); // Iniciar el temporizador para desactivar la hiper velocidad
         }
-
-        private void DesactivarHiperVelocidad()
+        // Métodos para mover el jugador y consumir combustible
+        public void MoverIzquierda()
         {
-            Velocidad = new Random().Next(1, 11); // Restablecer a una velocidad aleatoria
-            hiperVelocidadTimer.Stop(); // Detener el temporizador
-        }
-
-        public void MoverIzquierda(GameForm gameForm)
-        {
-            if (X - CellSize >= OffsetX && Combustible > 0)  // Asegurarnos de que solo se pueda mover si hay combustible
+            if (X - CellSize >= OffsetX)  // Verifica que no se salga por el lado izquierdo de la cuadrícula
             {
                 X -= CellSize;
-                Estela.AgregarNodo(X + CellSize / 2, Y + CellSize / 2);  // Ajusta la posición de la estela al centro de la celda
-                ConsumirCombustible(); // Consumir combustible solo al moverse
-                RevisarColisionesConItems(gameForm);
-                if (collisionManager.CheckCollisions(this)) Explode();
+                Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
             }
+            ConsumirCombustible();
+            if (collisionManager.CheckCollisions(this)) Explode(); // Verifica colisiones después de moverse
         }
 
-        public void MoverDerecha(GameForm gameForm)
+        public void MoverDerecha()
         {
-            if (X + CellSize < OffsetX + GridWidth && Combustible > 0)  // Asegurarnos de que solo se pueda mover si hay combustible
+            if (X + CellSize < OffsetX + GridWidth)  // Verifica que no se salga por el lado derecho de la cuadrícula
             {
                 X += CellSize;
-                Estela.AgregarNodo(X + CellSize / 2, Y + CellSize / 2);  // Ajusta la posición de la estela al centro de la celda
-                ConsumirCombustible(); // Consumir combustible solo al moverse
-                RevisarColisionesConItems(gameForm);
-                if (collisionManager.CheckCollisions(this)) Explode();
+                Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
             }
+            ConsumirCombustible();
+            if (collisionManager.CheckCollisions(this)) Explode(); // Verifica colisiones después de moverse
         }
 
-       
-
-        public void MoverArriba(GameForm gameForm)
+        public void MoverArriba()
         {
-            if (Y - CellSize >= OffsetY && Combustible > 0)  // Asegurarnos de que solo se pueda mover si hay combustible
+            if (Y - CellSize >= OffsetY)  // Verifica que no se salga por el lado superior de la cuadrícula
             {
                 Y -= CellSize;
-                Estela.AgregarNodo(X + CellSize / 2, Y + CellSize / 2);  // Ajusta la posición de la estela al centro de la celda
-                ConsumirCombustible(); // Consumir combustible solo al moverse
-                RevisarColisionesConItems(gameForm);
-                if (collisionManager.CheckCollisions(this)) Explode();
+                Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
             }
+            ConsumirCombustible();
+            if (collisionManager.CheckCollisions(this)) Explode(); // Verifica colisiones después de moverse
         }
 
-
-        public void MoverAbajo(GameForm gameForm)
+        public void MoverAbajo()
         {
-            if (Y + CellSize < OffsetY + GridHeight && Combustible > 0)  // Asegurarnos de que solo se pueda mover si hay combustible
+            if (Y + CellSize < OffsetY + GridHeight)  // Verifica que no se salga por el lado inferior de la cuadrícula
             {
                 Y += CellSize;
-                Estela.AgregarNodo(X + CellSize / 2, Y + CellSize / 2);  // Ajusta la posición de la estela al centro de la celda
-                ConsumirCombustible(); // Consumir combustible solo al moverse
-                RevisarColisionesConItems(gameForm);
-                if (collisionManager.CheckCollisions(this)) Explode();
+                Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
             }
+            ConsumirCombustible();
+            if (collisionManager.CheckCollisions(this)) Explode(); // Verifica colisiones después de moverse
         }
 
-
-        public void ConsumirCombustible()
+        private void Explode()
         {
-            if (Combustible > 0)
-            {
-                Combustible -= 1;
-                if (Combustible <= 0)
-                {
-                    Explode();
-                }
-            }
+            // Implementar la lógica de explosión
+            collisionManager.AddExplosion(new Explosion(X, Y));
+            collisionManager.RemoveJugador(this);
         }
-
-
-
-        public void Explode()
+        public void ReducirCombustible(int cantidad)
         {
-            // Implementación de la explosión
+            Combustible -= cantidad;
+            if (Combustible < 0) Combustible = 0;
         }
 
-        public void RevisarColisionesConItems(GameForm gameform)
+        private void ConsumirCombustible()
         {
-            var items = gameform.items; // Ahora se accede directamente a los ítems del GameForm
-
-            for (int i = items.Count - 1; i >= 0; i--)
-            {
-                if (X == items[i].Posicion.X && Y == items[i].Posicion.Y)
-                {
-                    RecogerPoder(items[i]);
-                    items.RemoveAt(i);
-                }
-            }
+            int celdasRecorridas = Velocidad * 5;
+            ReducirCombustible(celdasRecorridas / 5);
         }
-
+        private void ActualizarEstela()
+        {
+            Estela.AgregarNodo(X, Y);
+        }
     }
+
+
 }

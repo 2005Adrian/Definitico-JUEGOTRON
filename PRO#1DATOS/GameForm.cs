@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace PRO_1DATOS
@@ -9,106 +10,143 @@ namespace PRO_1DATOS
     {
         public ListaEnlazadaRectangulos listaEnlazada;
         public Jugador jugador;
-        public List<Poderes> items;
+        public Image motoImagen;
         public List<Bot> bots;
-        public CollisionManager collisionManager;
-        public bool gameOver = false;
-        private Random random = new Random();
         public int gridWidth;
         public int gridHeight;
-        private System.Windows.Forms.Timer botsTimer;
-
+        public System.Windows.Forms.Timer timer;
+        public CollisionManager collisionManager;
+        public Random random;
+        public bool gameOver = false; // Esta es la variable que indica si el juego ha terminado
+        public List<Poderes> items; // Lista de ítems
 
         public GameForm()
         {
             InitializeComponent();
             this.BackColor = Color.White;
 
-            // Inicializar la lista de items
+            // Inicializamos 'items' antes de cualquier otro uso
             items = new List<Poderes>();
 
-            InicializarJuego();
+            InicializarJuego(); // Llamamos a InicializarJuego después de la inicialización
         }
 
-       
+        private void MoverBots()
+        {
+            // Añadir un retardo inicial para evitar la colisión inmediata
+            if (timer.Interval == 100) // Intervalo inicial
+            {
+                timer.Interval = 500; // Aumenta el intervalo después del primer tick
+            }
+            if (gameOver) return;
+
+            foreach (var bot in bots.ToList())
+            {
+                bot.MoverAleatorio();
+
+                if (collisionManager.CheckCollisions(bot))
+                {
+                    bots.Remove(bot);
+                }
+            }
+
+            if (bots.Count == 0 && !gameOver)
+            {
+                gameOver = true;
+                MessageBox.Show("¡Has ganado!");
+                this.Close();
+                return;
+            }
+
+            if (collisionManager.CheckCollisions(jugador))
+            {
+                // Asegúrate de que el juego se detiene después de la primera colisión
+                if (!gameOver)
+                {
+                    gameOver = true; // Marca el juego como terminado
+                    MessageBox.Show("Has perdido!");
+                    this.Close();
+                }
+                return;
+            }
+
+            Invalidate();
+        }
+
+        private void GameForm_Load(object sender, EventArgs e)
+        {
+            // Aquí puedes agregar la lógica que quieras ejecutar cuando se cargue GameForm.
+        }
 
         private void InicializarJuego()
         {
+            random = new Random();
             int filas = this.ClientSize.Height / 20;
             int columnas = 25;
-            int offsetX = (this.ClientSize.Width - columnas * 20) / 2;
-            int offsetY = 0;
+
+            // Llamamos a GenerarItemsAleatorios después de que 'items' ha sido inicializada
+            GenerarItemsAleatorios();
 
             gridWidth = columnas * 20;
             gridHeight = filas * 20;
-
+            int offsetX = (this.ClientSize.Width - gridWidth) / 2;
+            int offsetY = 0;
             listaEnlazada = new ListaEnlazadaRectangulos(filas, columnas, offsetX, offsetY);
-            GenerarItemsAleatorios();
 
-            int playerStartX = offsetX + (columnas * 20 / 2) - 20;
-            int playerStartY = filas * 20 - 60;
-
+            int playerStartX = offsetX + (gridWidth / 2) - 20;
+            int playerStartY = gridHeight - 60;
+            bots = new List<Bot>();
             collisionManager = new CollisionManager(new List<Jugador>(), new List<Bot>());
 
+            // Crear el jugador y agregarlo al CollisionManager
             jugador = new Jugador(playerStartX, playerStartY, Recursos.ObtenerImagen("moto"), offsetX, offsetY, gridWidth, gridHeight, 20, Color.Red, collisionManager);
-            collisionManager.jugadores.Add(jugador);  // Añadir jugador al collisionManager
+            collisionManager.jugadores.Add(jugador);
 
-            // Crear bots y añadir al collision manager
-            bots = new List<Bot>();
+            // Crear bots y añadirlos al CollisionManager
             for (int i = 0; i < 4; i++)
             {
                 Color botColor = GetBotColor(i);
                 int botStartX = offsetX + random.Next(columnas) * 20;
                 int botStartY = offsetY + random.Next(filas) * 20;
-                Bot bot = new Bot(botStartX, botStartY, CrearImagenMoto(20, 20, botColor), botColor, offsetX, offsetY, gridWidth, gridHeight, 20, collisionManager);
+                Image botImagen = CrearImagenMoto(20, 20, botColor);
+                Bot bot = new Bot(botStartX, botStartY, botImagen, botColor, offsetX, offsetY, gridWidth, gridHeight, 20, collisionManager);
                 bots.Add(bot);
                 collisionManager.bots.Add(bot);
-
-               
-
             }
 
             this.DoubleBuffered = true;
-            this.KeyDown += OnKeyDown;
-        }
-        private void GameForm_Load(object sender, EventArgs e)
-        {
-            // Temporizador para mover los bots
-            botsTimer = new System.Windows.Forms.Timer();
-            botsTimer.Interval = 200; // Mueve los bots cada 200ms
-            botsTimer.Tick += (s, e) => MoverBots(); // Asocia el método MoverBots
-            botsTimer.Start(); // Iniciar el temporizador
-        }
-        private void MoverBots()
-        {
-            for (int i = bots.Count - 1; i >= 0; i--)
-            {
-                var bot = bots[i];
-                bot.MoverAleatorio(this); // Pasamos el GameForm actual como parámetro
+            this.KeyDown += new KeyEventHandler(OnKeyDown);
 
-                if (collisionManager.CheckCollisions(bot))
-                {
-                    bots.RemoveAt(i);  // Eliminar el bot de la lista si colisiona
-                }
-            }
-
-            // Redibuja la pantalla para reflejar los movimientos
-            Invalidate();
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = 200;
+            timer.Tick += (s, e) => MoverBots();
+            timer.Start();
         }
 
-
-        private void GenerarItemsAleatorios()
+        public void GenerarItemsAleatorios()
         {
-            string[] tiposDeItems = { "combustible", "crecimiento_estela", "bomba", "escudo", "hiper_velocidad" };
+            string[] tiposDeitems = { "Celda de Combustible", "Crecimiento de Estela", "Bomba", "Escudo", "Hiper Velocidad" };
 
             for (int i = 0; i < 5; i++)
             {
-                string tipo = tiposDeItems[random.Next(tiposDeItems.Length)];
-                RectanguloNodo nodoAleatorio = listaEnlazada.ObtenerNodoAleatorio();
-                Point posicionAleatoria = new Point(nodoAleatorio.Rectangulo.X, nodoAleatorio.Rectangulo.Y);
+                string tipo = tiposDeitems[random.Next(tiposDeitems.Length)];
+                int x = random.Next(gridWidth / 20) * 20;
+                int y = random.Next(gridHeight / 20) * 20;
+                Poderes nuevoItem = new Poderes(tipo, new Point(x, y));
 
-                Poderes nuevoItem = new Poderes(tipo, posicionAleatoria);
-                items.Add(nuevoItem);
+                items.Add(nuevoItem); // Ahora 'items' está inicializado y se pueden agregar elementos
+            }
+        }
+
+        public void RevisarColisionesConItems()
+        {
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                if (jugador.X == items[i].Posicion.X && jugador.Y == items[i].Posicion.Y)
+                {
+                    jugador.RecogerPoder(items[i]);
+                    items.RemoveAt(i);
+                }
             }
         }
 
@@ -116,103 +154,72 @@ namespace PRO_1DATOS
         {
             base.OnPaint(e);
 
-            // Dibujar la cuadrícula
+            Pen neonPen = new Pen(Color.Cyan, 2);
+            // Dibujar la cuadrícula con el desplazamiento
             foreach (var nodo in listaEnlazada.Matriz)
             {
-                e.Graphics.DrawRectangle(Pens.Cyan, nodo.Rectangulo);
+                e.Graphics.DrawRectangle(neonPen, nodo.Rectangulo);
             }
 
-            // Dibujar los ítems
             foreach (var item in items)
             {
                 item.Dibujar(e.Graphics);
             }
-
-            // Dibujar barra de gasolina
-            DibujarBarraGasolina(e.Graphics);
-
-            // Dibujar inventario
             DibujarInventario(e.Graphics);
 
-            // Dibujar estela del jugador y bots
             jugador.Estela.DibujarEstela(e.Graphics);
 
-            // Ajustar la imagen del jugador para que esté centrada en la celda
-            e.Graphics.DrawImage(jugador.MotoImagen, jugador.X + jugador.CellSize / 2 - 10, jugador.Y + jugador.CellSize / 2 - 10, 20, 20);
-
-            // Dibujar los bots
+            // Dibujar la moto
+            e.Graphics.DrawImage(jugador.MotoImagen, jugador.X, jugador.Y, 20, 20);
             foreach (var bot in bots)
             {
                 bot.Estela.DibujarEstela(e.Graphics);
-                e.Graphics.DrawImage(bot.MotoImagen, bot.X + bot.CellSize / 2 - 10, bot.Y + bot.CellSize / 2 - 10, 20, 20);
+
+                e.Graphics.DrawImage(bot.MotoImagen, bot.X, bot.Y, 20, 20);
             }
-        }
-
-
-        private void DibujarBarraGasolina(Graphics g)
-        {
-            int barraWidth = 200;
-            int barraHeight = 20;
-            float porcentajeGasolina = (float)jugador.Combustible / 100;
-
-            g.DrawRectangle(Pens.White, 10, 10, barraWidth, barraHeight);
-            g.FillRectangle(Brushes.Red, 10, 10, barraWidth * porcentajeGasolina, barraHeight);
+            collisionManager.DrawExplosions(e.Graphics);
         }
 
         private void DibujarInventario(Graphics g)
         {
-            int startX = 10;
-            int startY = 40;
+            int startX = this.ClientSize.Width - 150;
+            int startY = 10;
             int size = 40;
-
-            g.DrawString("Inventario:", new Font("Arial", 12), Brushes.White, startX, startY);
 
             for (int i = 0; i < jugador.Inventario.Count; i++)
             {
-                Poderes poder = jugador.Inventario[i];
-                g.DrawImage(poder.Imagen, startX, startY + (i * (size + 10)), size, size); // Dibuja el poder en el inventario
+                g.DrawImage(jugador.Inventario[i].Imagen, startX, startY + (i * (size + 10)), size, size);
             }
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (jugador.Combustible > 0)  // Asegurarse de que solo se pueda mover si hay combustible
+            switch (e.KeyCode)
             {
-                switch (e.KeyCode)
-                {
-                    case Keys.Left:
-                        jugador.MoverIzquierda(this);
-                        break;
-                    case Keys.Right:
-                        jugador.MoverDerecha(this);
-                        break;
-                    case Keys.Up:
-                        jugador.MoverArriba(this);
-                        break;
-                    case Keys.Down:
-                        jugador.MoverAbajo(this);
-                        break;
-                    case Keys.C:
-                        jugador.UsarPoder(jugador.Inventario.FindIndex(p => p.Tipo == "crecimiento_estela"));
-                        break;
-                    case Keys.B:
-                        jugador.UsarPoder(jugador.Inventario.FindIndex(p => p.Tipo == "bomba"));
-                        break;
-                    case Keys.E:
-                        jugador.UsarPoder(jugador.Inventario.FindIndex(p => p.Tipo == "escudo"));
-                        break;
-                    case Keys.H:
-                        jugador.UsarPoder(jugador.Inventario.FindIndex(p => p.Tipo == "hiper_velocidad"));
-                        break;
-                }
-
-                Invalidate();  // Redibujar la pantalla
+                case Keys.Left:
+                    jugador.MoverIzquierda();
+                    break;
+                case Keys.Right:
+                    jugador.MoverDerecha();
+                    break;
+                case Keys.Up:
+                    jugador.MoverArriba();
+                    break;
+                case Keys.Down:
+                    jugador.MoverAbajo();
+                    break;
+                case Keys.D1:  // Usar primer ítem del inventario
+                    jugador.UsarPoder(0);
+                    break;
+                case Keys.D2:  // Usar segundo ítem del inventario
+                    jugador.UsarPoder(1);
+                    break;
             }
+
+            Invalidate();  // Redibujar la pantalla
         }
 
-
-            // Método auxiliar para crear la imagen de la moto
-            private Image CrearImagenMoto(int width, int height, Color color)
+        private Image CrearImagenMoto(int width, int height, Color color)
         {
             Bitmap bmp = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(bmp))
@@ -224,34 +231,10 @@ namespace PRO_1DATOS
             return bmp;
         }
 
-        // Método auxiliar para obtener un color para los bots
         private Color GetBotColor(int index)
         {
             Color[] colors = { Color.Blue, Color.Green, Color.Yellow, Color.Purple, Color.Orange };
             return colors[index % colors.Length];
         }
-        public void TerminarJuego(string mensaje)
-        {
-            // Mostrar un mensaje al jugador
-            MessageBox.Show(mensaje, "Juego terminado");
-
-            // Detener el temporizador para que los bots dejen de moverse
-            if (botsTimer != null)
-            {
-                botsTimer.Stop();
-            }
-
-            // Desactivar la entrada de teclado del jugador
-            this.KeyDown -= OnKeyDown;
-
-            // Opcional: Cerrar el formulario de juego después de mostrar el mensaje
-            this.Close();
-
-            // Opcional: Volver al lobby o reiniciar el juego
-            // Form1 lobby = new Form1();
-            // lobby.Show(); 
-        }
-
-
     }
 }
