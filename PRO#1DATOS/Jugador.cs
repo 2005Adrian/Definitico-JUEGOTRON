@@ -94,7 +94,10 @@ namespace PRO_1DATOS
                 Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
             }
             ConsumirCombustible();
-            if (collisionManager.CheckCollisions(this)) Explode(); // Verifica colisiones después de moverse
+            if (collisionManager.CheckCollisions(this))
+            {
+                collisionManager.Explode(this);  // Eliminar el jugador si colisiona
+            }
         }
 
         public void MoverDerecha()
@@ -105,7 +108,10 @@ namespace PRO_1DATOS
                 Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
             }
             ConsumirCombustible();
-            if (collisionManager.CheckCollisions(this)) Explode(); // Verifica colisiones después de moverse
+            if (collisionManager.CheckCollisions(this))
+            {
+                collisionManager.Explode(this);  // Eliminar el jugador si colisiona
+            }
         }
 
         public void MoverArriba()
@@ -116,7 +122,10 @@ namespace PRO_1DATOS
                 Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
             }
             ConsumirCombustible();
-            if (collisionManager.CheckCollisions(this)) Explode(); // Verifica colisiones después de moverse
+            if (collisionManager.CheckCollisions(this))
+            {
+                collisionManager.Explode(this);  // Eliminar el jugador si colisiona
+            }
         }
 
         public void MoverAbajo()
@@ -127,7 +136,10 @@ namespace PRO_1DATOS
                 Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
             }
             ConsumirCombustible();
-            if (collisionManager.CheckCollisions(this)) Explode(); // Verifica colisiones después de moverse
+            if (collisionManager.CheckCollisions(this))
+            {
+                collisionManager.Explode(this);  // Eliminar el jugador si colisiona
+            }
         }
 
         private void Explode()
@@ -161,11 +173,17 @@ namespace PRO_1DATOS
                 if (X == items[i].Posicion.X && Y == items[i].Posicion.Y)
                 {
                     Console.WriteLine($"Recogido poder: {items[i].Tipo} en la posición {items[i].Posicion.X}, {items[i].Posicion.Y}");
-                    RecogerPoder(items[i]);  // Recoge el poder
-                    items.RemoveAt(i);  // Elimina el ítem de la lista una vez recogido
+
+                    // Recoger el poder y activarlo inmediatamente
+                    RecogerPoder(items[i]);
+                    UsarPoder(Inventario.Count - 1);  // Activa el poder recién recogido
+
+                    // Elimina el ítem de la lista de ítems
+                    items.RemoveAt(i);  // Eliminar el ítem recogido para que desaparezca visualmente
                 }
             }
         }
+
 
     }
 

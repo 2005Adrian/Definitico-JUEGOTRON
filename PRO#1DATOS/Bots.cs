@@ -53,6 +53,13 @@ namespace PRO_1DATOS
             {
                 Explode(); // El bot explota si choca con el borde
             }
+
+            // Revisar colisiones con estelas y jugadores/bots
+            if (collisionManager.CheckCollisions(this))
+            {
+                Explode(); // Eliminar bot si colisiona con estela o jugador
+            }
+
             // Consumir combustible
             ConsumirCombustible();
             // Explota si se queda sin combustible
@@ -105,5 +112,26 @@ namespace PRO_1DATOS
                 Explode();  // Si se queda sin combustible, explota
             }
         }
+
+        public void RevisarColisionesConItems(List<Poderes> items)
+        {
+            // Recorrer todos los ítems en la lista para verificar si el bot colisiona con ellos
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                // Si la posición del bot coincide con la posición del ítem
+                if (X == items[i].Posicion.X && Y == items[i].Posicion.Y)
+                {
+                    Console.WriteLine($"Bot ha recogido el poder: {items[i].Tipo} en la posición {items[i].Posicion.X}, {items[i].Posicion.Y}");
+
+                    // Recoger el poder y activarlo inmediatamente
+                    RecogerPoder(items[i]);
+                    UsarPoder(Inventario.Count - 1);  // Activa el poder recién recogido
+
+                    // Elimina el ítem de la lista de ítems
+                    items.RemoveAt(i);  // Eliminar el ítem recogido para que desaparezca visualmente
+                }
+            }
+        }
+
     }
 }

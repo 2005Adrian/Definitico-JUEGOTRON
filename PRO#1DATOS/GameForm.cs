@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+
+using System.Media;
 
 namespace PRO_1DATOS
 {
@@ -20,11 +23,14 @@ namespace PRO_1DATOS
         public int gridWidth;
         public int gridHeight;
         public System.Windows.Forms.Timer timer;
+        public int CellSize { get; set; }  // Agregar CellSize si no está definido
 
+        public SoundPlayer soundPlayer;
         public GameForm()
         {
             InitializeComponent();
             this.BackColor = Color.White;
+            CellSize = 20;  // Puedes ajustar este valor según el tamaño de las celdas
 
             // Initialize 'items' before use
             items = new List<Poderes>();
@@ -38,8 +44,13 @@ namespace PRO_1DATOS
                 // Maneja el caso donde el form no es el activo o no es de tipo GameForm
             }
 
-
+            reproducirSonido();
             InicializarJuego();
+        }
+        public void reproducirSonido()
+        {
+            SoundPlayer soundPlayer = new SoundPlayer(Properties.Resources.fondogameform);
+            soundPlayer.PlayLooping();
         }
 
         // MoverBots method: Handles moving the bots.
@@ -52,6 +63,7 @@ namespace PRO_1DATOS
             foreach (var bot in bots.ToList())
             {
                 bot.MoverAleatorio();  // Move the bot randomly within the game bounds
+                bot.RevisarColisionesConItems(items);
 
                 // Check if the bot collides with anything
                 if (collisionManager.CheckCollisions(bot))
@@ -97,17 +109,18 @@ namespace PRO_1DATOS
             random = new Random();
             int filas = this.ClientSize.Height / 20;
             int columnas = 25;
-            int offsetX = (this.ClientSize.Width - columnas * 20) / 2;
+            int offsetX = (this.ClientSize.Width - columnas * CellSize) / 2;  // Centrar la cuadrícula
             int offsetY = 0;
+            gridWidth = columnas * CellSize;
+            gridHeight = filas * CellSize;
 
-            gridWidth = columnas * 20;
-            gridHeight = filas * 20;
 
             listaEnlazada = new ListaEnlazadaRectangulos(filas, columnas, offsetX, offsetY);
             GenerarItemsAleatorios();
 
-            int playerStartX = offsetX + (columnas * 20 / 2) - 20;
-            int playerStartY = filas * 20 - 60;
+            int playerStartX = (offsetX + (columnas * CellSize / 2)) / CellSize * CellSize;  // Alinear al tamaño de la celda
+            int playerStartY = (filas * CellSize - 60) / CellSize * CellSize;  // Alinear al tamaño de la celda
+
             collisionManager = new CollisionManager(new List<Jugador>(), new List<Bot>());
 
             // Initialize the player and add to collision manager.
@@ -182,7 +195,7 @@ namespace PRO_1DATOS
 
             // Drawing player and bots
             jugador.Estela.DibujarEstela(e.Graphics);
-            e.Graphics.DrawImage(jugador.MotoImagen, jugador.X, jugador.Y, 20, 20);
+            e.Graphics.DrawImage(jugador.MotoImagen, (jugador.X / jugador.CellSize) * jugador.CellSize, (jugador.Y / jugador.CellSize) * jugador.CellSize, jugador.CellSize, jugador.CellSize);
 
             foreach (var bot in bots)
             {

@@ -26,6 +26,9 @@ namespace PRO_1DATOS
 
         public void AgregarNodo(int x, int y)
         {
+            int ajustedX = (x / 20) * 20;
+            int ajustedY = (y / 20) * 20;
+
             NodoEstela nuevoNodo = new NodoEstela(x, y);
             nuevoNodo.Siguiente = Cabeza;
             Cabeza = nuevoNodo;
@@ -62,10 +65,8 @@ namespace PRO_1DATOS
         {
             NodoEstela actual = Cabeza;
             while (actual != null)
-
             {
-                
-                g.FillRectangle(new SolidBrush(color), actual.X, actual.Y, 20, 20);
+                g.FillRectangle(new SolidBrush(color), actual.X, actual.Y, 20, 20);  // Asegúrate de que las coordenadas estén alineadas con las celdas
                 actual = actual.Siguiente;
             }
         }

@@ -15,22 +15,26 @@ namespace PRO_1DATOS
         }
         public bool CheckCollisions(Jugador jugador)
         {
-            foreach (var bot in bots)
+            // Verificar colisión del jugador con las estelas de otros jugadores y bots
+            foreach (var otroJugador in jugadores)
             {
-                if (VerificarColisionConEstela(jugador, bot.Estela))
+                if (otroJugador != jugador)
                 {
-                    explosiones.Add(new Explosion(jugador.X, jugador.Y));
-                    RemoveJugador(jugador);  // Remove the player if a collision happens
-                    return true;
+                    // Verificar si colisiona con la estela de otro jugador
+                    if (VerificarColisionConEstela(jugador, otroJugador.Estela))
+                    {
+                        Explode(jugador);  // Eliminar el jugador si colisiona con la estela de otro jugador
+                        return true;
+                    }
                 }
             }
 
-            foreach (var otroJugador in jugadores)
+            foreach (var bot in bots)
             {
-                if (otroJugador != jugador && VerificarColisionConEstela(jugador, otroJugador.Estela))
+                // Verificar si colisiona con la estela de un bot
+                if (VerificarColisionConEstela(jugador, bot.Estela))
                 {
-                    explosiones.Add(new Explosion(jugador.X, jugador.Y));
-                    RemoveJugador(jugador);  // Remove the player if a collision happens
+                    Explode(jugador);  // Eliminar el jugador si colisiona con la estela de un bot
                     return true;
                 }
             }
@@ -38,28 +42,68 @@ namespace PRO_1DATOS
             return false;
         }
 
-        private bool VerificarColisionConEstela(Jugador jugador, Estela estela)
+        public bool CheckCollisions(Bot bot)
         {
-            var nodoActual = estela.Cabeza;
-            int posicionesIgnoradas = 0;
-            while (nodoActual != null)
+            // Verificar colisión del bot con las estelas de jugadores y otros bots
+            foreach (var otroBot in bots)
             {
-                // Ignorar las primeras tres posiciones de la estela
-                if (posicionesIgnoradas < 3)
+                if (otroBot != bot)
                 {
-                    posicionesIgnoradas++;
-                }
-                else
-                {
-                    // Verificar si la posición del jugador coincide con alguna posición de la estela (excepto las primeras tres)
-                    if (jugador.X == nodoActual.X && jugador.Y == nodoActual.Y)
+                    // Verificar si el bot colisiona con la estela de otro bot
+                    if (VerificarColisionConEstela(bot, otroBot.Estela))
                     {
+                        Explode(bot);  // Eliminar el bot si colisiona con la estela de otro bot
                         return true;
                     }
                 }
+            }
+
+            foreach (var jugador in jugadores)
+            {
+                // Verificar si el bot colisiona con la estela de un jugador
+                if (VerificarColisionConEstela(bot, jugador.Estela))
+                {
+                    Explode(bot);  // Eliminar el bot si colisiona con la estela del jugador
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        public bool VerificarColisionConEstela(Jugador jugador, Estela estela)
+        {
+            var nodoActual = estela.Cabeza;
+
+            // Recorrer toda la estela y comprobar si hay colisión
+            while (nodoActual != null)
+            {
+                // Verificar si la posición del jugador coincide con la posición de cualquier parte de la estela
+                if (jugador.X == nodoActual.X && jugador.Y == nodoActual.Y)
+                {
+                    return true;  // Colisión detectada con la estela
+                }
                 nodoActual = nodoActual.Siguiente;
             }
-            return false;
+
+            return false;  // No hay colisión
+        }
+        public void Explode(Jugador jugador)
+        {
+            // Agregar explosión en la posición del jugador
+            AddExplosion(new Explosion(jugador.X, jugador.Y));
+            // Eliminar el jugador
+            RemoveJugador(jugador);
+        }
+
+        // Método para explotar un bot
+        public void Explode(Bot bot)
+        {
+            // Agregar explosión en la posición del bot
+            AddExplosion(new Explosion(bot.X, bot.Y));
+            // Eliminar el bot
+            RemoveBot(bot);
         }
 
 
