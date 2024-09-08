@@ -28,6 +28,7 @@ namespace PRO_1DATOS
             imagenes["bomba"] = Properties.Resources.bomba;
             imagenes["escudo"] = Properties.Resources.escudo;
             imagenes["hiper_velocidad"] = Properties.Resources.hiper_velocidad;
+            imagenes["gasolina"] = Properties.Resources.gasolina;
         }
 
 

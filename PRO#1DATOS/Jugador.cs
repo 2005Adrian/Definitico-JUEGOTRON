@@ -55,8 +55,7 @@ namespace PRO_1DATOS
                 switch (poder.Tipo)
                 {
                     case "combustible":
-                        Combustible += poder.Valor;
-                        if (Combustible > 100) Combustible = 100; // Limitar a 100
+                        Combustible= 100; // Limitar a 100
                         break;
                     case "crecimiento_estela":
                         Estela.Crecer(10);
@@ -75,7 +74,7 @@ namespace PRO_1DATOS
             }
         }
 
-
+        
         public void ActivarEscudo(int duracion)
         {
 
@@ -156,13 +155,15 @@ namespace PRO_1DATOS
 
         private void ConsumirCombustible()
         {
-            int celdasRecorridas = Velocidad * 5;
-            ReducirCombustible(celdasRecorridas / 5);
+            int celdasRecorridas = Velocidad * 2;
+            ReducirCombustible(celdasRecorridas /10);
         }
         private void ActualizarEstela()
         {
             Estela.AgregarNodo(X, Y);
         }
+        
+
 
         public void RevisarColisionesConItems(List<Poderes> items)
         {
@@ -173,11 +174,18 @@ namespace PRO_1DATOS
                 if (X == items[i].Posicion.X && Y == items[i].Posicion.Y)
                 {
                     Console.WriteLine($"Recogido poder: {items[i].Tipo} en la posición {items[i].Posicion.X}, {items[i].Posicion.Y}");
-
-                    // Recoger el poder y activarlo inmediatamente
-                    RecogerPoder(items[i]);
-                    UsarPoder(Inventario.Count - 1);  // Activa el poder recién recogido
-
+                    if (items[i].Tipo == "combustible")
+                    {
+                        // Recargar la gasolina a 100
+                        Combustible = 100;
+                    }
+                    
+                    else
+                    {
+                        // Para otros poderes, recogerlos como normalmente lo haces
+                        RecogerPoder(items[i]);
+                        UsarPoder(Inventario.Count - 1);  // Activa el poder recién recogido
+                    }
                     // Elimina el ítem de la lista de ítems
                     items.RemoveAt(i);  // Eliminar el ítem recogido para que desaparezca visualmente
                 }

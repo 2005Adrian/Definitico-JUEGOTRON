@@ -12,8 +12,8 @@ namespace PRO_1DATOS
         public Image Imagen { get; private set; }
 
         private Random random;
-        
-        public Poderes(string tipo, Point posicion)
+
+        public Poderes(string tipo, Point posicion, int valorItem)
         {
             random = new Random();
             Tipo = tipo;

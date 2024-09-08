@@ -29,7 +29,7 @@ namespace PRO_1DATOS
         public GameForm()
         {
             InitializeComponent();
-            this.BackColor = Color.White;
+            this.BackColor = Color.Magenta;
             CellSize = 20;  // Puedes ajustar este valor según el tamaño de las celdas
 
             // Initialize 'items' before use
@@ -154,14 +154,20 @@ namespace PRO_1DATOS
         {
             string[] tiposDeItems = { "combustible", "crecimiento_estela", "bomba", "escudo", "hiper_velocidad" };
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 8; i++)
             {
                 string tipo = tiposDeItems[random.Next(tiposDeItems.Length)];
                 RectanguloNodo nodoAleatorio = listaEnlazada.ObtenerNodoAleatorio();
                 Point posicionAleatoria = new Point(nodoAleatorio.Rectangulo.X, nodoAleatorio.Rectangulo.Y);
 
-                Poderes nuevoItem = new Poderes(tipo, posicionAleatoria);
-                items.Add(nuevoItem);
+                int valorItem = tipo == "combustible" ? 100 : random.Next(10, 50);  // Establecer el valor del combustible a 100
+
+                Poderes gaso = new Poderes(tipo, posicionAleatoria,valorItem);
+                
+
+                items.Add(gaso);
+               // items.Add(hiper);
+               // items.Add(crece);
 
                 // Imprimir en la consola la generación de un nuevo ítem
                 Console.WriteLine($"Generado poder: {tipo} en la posición {posicionAleatoria.X}, {posicionAleatoria.Y}");
@@ -174,11 +180,11 @@ namespace PRO_1DATOS
         {
             base.OnPaint(e);
 
-            Pen neonPen = new Pen(Color.Cyan, 2);
+            Pen neonPen = new Pen(Color.Aqua, 2);
             // Drawing the grid
             foreach (var nodo in listaEnlazada.Matriz)
             {
-                e.Graphics.DrawRectangle(Pens.Cyan, nodo.Rectangulo);
+                e.Graphics.DrawRectangle(Pens.Aqua, nodo.Rectangulo);
             }
 
             // Drawing items
@@ -195,8 +201,15 @@ namespace PRO_1DATOS
 
             // Drawing player and bots
             jugador.Estela.DibujarEstela(e.Graphics);
-            e.Graphics.DrawImage(jugador.MotoImagen, (jugador.X / jugador.CellSize) * jugador.CellSize, (jugador.Y / jugador.CellSize) * jugador.CellSize, jugador.CellSize, jugador.CellSize);
 
+            // Centrar el jugador en la celda, ajustando su imagen al tamaño de la celda.
+            int jugadorX = (jugador.X / jugador.CellSize) * jugador.CellSize + (jugador.CellSize - jugador.MotoImagen.Width) / 2;
+            int jugadorY = (jugador.Y / jugador.CellSize) * jugador.CellSize + (jugador.CellSize - jugador.MotoImagen.Height) / 2;
+
+            // Dibujar al jugador centrado
+            e.Graphics.DrawImage(jugador.MotoImagen, jugadorX, jugadorY, jugador.CellSize, jugador.CellSize);
+
+            // Dibujar los bots
             foreach (var bot in bots)
             {
                 bot.Estela.DibujarEstela(e.Graphics);
@@ -204,16 +217,36 @@ namespace PRO_1DATOS
             }
         }
 
+
         // Method to draw the fuel bar.
+        private bool juegoTerminado = false;
+
         private void DibujarBarraGasolina(Graphics g)
         {
             int barraWidth = 200;
             int barraHeight = 20;
             float porcentajeGasolina = (float)jugador.Combustible / 100;
 
-            g.DrawRectangle(Pens.White, 10, 10, barraWidth, barraHeight);
+            // Dibujar la barra de gasolina
+            g.DrawRectangle(Pens.Gray, 10, 10, barraWidth, barraHeight);
             g.FillRectangle(Brushes.Red, 10, 10, barraWidth * porcentajeGasolina, barraHeight);
+
+            // Obtener la imagen de combustible de los recursos
+            Image gasolinaImage = Recursos.ObtenerImagen("combustible");
+
+            // Dibujar la imagen de gasolina junto a la barra
+            g.DrawImage(gasolinaImage, 10, 10, 30, 30); // Ajusta la posición y tamaño según sea necesario
+
+            // Comprobar si el combustible es 0 y mostrar el mensaje solo una vez
+            if (jugador.Combustible == 0 && !juegoTerminado)
+            {
+                juegoTerminado = true;
+                this.Close();// Evitar que se vuelva a mostrar el mensaje
+                                       // Lógica adicional para finalizar el juego o reiniciar al jugador
+            }
         }
+
+
 
         // Method to draw the player's inventory.
         private void DibujarInventario(Graphics g)
