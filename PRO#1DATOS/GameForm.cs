@@ -53,57 +53,52 @@ namespace PRO_1DATOS
             soundPlayer.PlayLooping();
         }
 
-        // MoverBots method: Handles moving the bots.
         private void MoverBots()
         {
-            // Ensure the game is not over before processing bot movements
             if (gameOver) return;
 
-            // Move each bot and check for collisions
             foreach (var bot in bots.ToList())
             {
-                bot.MoverAleatorio();  // Move the bot randomly within the game bounds
+                bot.MoverAleatorio(); 
                 bot.RevisarColisionesConItems(items);
 
-                // Check if the bot collides with anything
                 if (collisionManager.CheckCollisions(bot))
                 {
-                    bots.Remove(bot);  // Remove the bot if a collision is detected
+                    bots.Remove(bot);  
                 }
             }
 
-            // If all bots are removed, the player wins
+           
             if (bots.Count == 0 && !gameOver)
             {
                 gameOver = true;
                 MessageBox.Show("¡Has ganado!");
-                this.Close();  // Close the game form after winning
+                this.Close();  
                 return;
             }
 
-            // Check if the player collided with any bot or object
+            
             if (collisionManager.CheckCollisions(jugador))
             {
-                // Trigger the game-over state if the player loses
                 if (!gameOver)
                 {
-                    gameOver = true;  // Mark the game as over
-                    MessageBox.Show("Has perdido!");  // Show the game-over message
-                    this.Close();  // Close the game form after losing
+                    gameOver = true;  
+                    MessageBox.Show("Has perdido!");  
+                    this.Close();  
                 }
                 return;
             }
 
-            Invalidate();  // Redraw the screen after each tick to update the game state
+            Invalidate();  
         }
 
 
         private void GameForm_Load(object sender, EventArgs e)
         {
-            // Logic to initialize when GameForm loads, if needed.
+
         }
 
-        // Method to initialize the game.
+        
         private void InicializarJuego()
         {
             random = new Random();
@@ -123,11 +118,9 @@ namespace PRO_1DATOS
 
             collisionManager = new CollisionManager(new List<Jugador>(), new List<Bot>());
 
-            // Initialize the player and add to collision manager.
             jugador = new Jugador(playerStartX, playerStartY, Recursos.ObtenerImagen("moto"), offsetX, offsetY, gridWidth, gridHeight, 20, Color.Red, collisionManager);
             collisionManager.jugadores.Add(jugador);
 
-            // Initialize bots and add to collision manager.
             bots = new List<Bot>();
             for (int i = 0; i < 4; i++)
             {
@@ -149,7 +142,6 @@ namespace PRO_1DATOS
             this.KeyDown += OnKeyDown;
         }
 
-        // Method to generate random items in the game.
         private void GenerarItemsAleatorios()
         {
             string[] tiposDeItems = { "combustible", "crecimiento_estela", "bomba", "escudo", "hiper_velocidad" };
@@ -175,7 +167,6 @@ namespace PRO_1DATOS
         }
 
 
-        // Paint method to handle all drawing on the form.
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -218,7 +209,6 @@ namespace PRO_1DATOS
         }
 
 
-        // Method to draw the fuel bar.
         private bool juegoTerminado = false;
 
         private void DibujarBarraGasolina(Graphics g)
@@ -300,7 +290,6 @@ namespace PRO_1DATOS
             Invalidate();  // Redraw the screen
         }
 
-        // Helper method to create the player's moto image.
         private Image CrearImagenMoto(int width, int height, Color color)
         {
             Bitmap bmp = new Bitmap(width, height);
@@ -313,7 +302,6 @@ namespace PRO_1DATOS
             return bmp;
         }
 
-        // Helper method to get bot colors.
         private Color GetBotColor(int index)
         {
             Color[] colors = { Color.Blue, Color.Green, Color.Yellow, Color.Purple, Color.Orange };
