@@ -27,9 +27,9 @@ namespace PRO_1DATOS
             X = x;
             Y = y;
             MotoImagen = motoImagen;
-            Estela = new Estela(x, y, 3, color); // Ajusta esto si es necesario
-            Velocidad = new Random().Next(1, 11); // Velocidad aleatoria entre 1 y 10
-            Combustible = 100; // Combustible inicial al máximo
+            Estela = new Estela(x, y, 3, color); 
+            Velocidad = new Random().Next(1, 11); 
+            Combustible = 100; 
             OffsetX = offsetX;
             OffsetY = offsetY;
             GridWidth = gridWidth;
@@ -55,22 +55,22 @@ namespace PRO_1DATOS
                 switch (poder.Tipo)
                 {
                     case "combustible":
-                        Combustible= 100; // Limitar a 100
+                        Combustible= 100; 
                         break;
                     case "crecimiento_estela":
                         Estela.Crecer(10);
                         break;
                     case "bomba":
-                        Explode();  // Explota si usa una bomba
+                        Explode();  
                         break;
                     case "escudo":
-                        ActivarEscudo(poder.Valor);  // Activa escudo por un tiempo
+                        ActivarEscudo(poder.Valor);  
                         break;
                     case "hiper_velocidad":
-                        ActivarHiperVelocidad(poder.Valor);  // Incrementar velocidad temporalmente
+                        ActivarHiperVelocidad(poder.Valor);  
                         break;
                 }
-                Inventario.RemoveAt(index);  // Eliminar el ítem usado del inventario
+                Inventario.RemoveAt(index);  
             }
         }
 
@@ -84,66 +84,65 @@ namespace PRO_1DATOS
         {
             Velocidad += incremento;
         }
-        // Métodos para mover el jugador y consumir combustible
+
         public void MoverIzquierda()
         {
-            if (X - CellSize >= OffsetX)  // Verifica que no se salga por el lado izquierdo de la cuadrícula
+            if (X - CellSize >= OffsetX)  
             {
                 X -= CellSize;
-                Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
+                Estela.AgregarNodo(X, Y);  
             }
             ConsumirCombustible();
             if (collisionManager.CheckCollisions(this))
             {
-                collisionManager.Explode(this);  // Eliminar el jugador si colisiona
+                collisionManager.Explode(this); 
             }
         }
 
         public void MoverDerecha()
         {
-            if (X + CellSize < OffsetX + GridWidth)  // Verifica que no se salga por el lado derecho de la cuadrícula
+            if (X + CellSize < OffsetX + GridWidth) 
             {
                 X += CellSize;
-                Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
+                Estela.AgregarNodo(X, Y);  
             }
             ConsumirCombustible();
             if (collisionManager.CheckCollisions(this))
             {
-                collisionManager.Explode(this);  // Eliminar el jugador si colisiona
+                collisionManager.Explode(this);  
             }
         }
 
         public void MoverArriba()
         {
-            if (Y - CellSize >= OffsetY)  // Verifica que no se salga por el lado superior de la cuadrícula
+            if (Y - CellSize >= OffsetY) 
             {
                 Y -= CellSize;
-                Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
+                Estela.AgregarNodo(X, Y);  
             }
             ConsumirCombustible();
             if (collisionManager.CheckCollisions(this))
             {
-                collisionManager.Explode(this);  // Eliminar el jugador si colisiona
+                collisionManager.Explode(this);  
             }
         }
 
         public void MoverAbajo()
         {
-            if (Y + CellSize < OffsetY + GridHeight)  // Verifica que no se salga por el lado inferior de la cuadrícula
+            if (Y + CellSize < OffsetY + GridHeight)  
             {
                 Y += CellSize;
-                Estela.AgregarNodo(X, Y);  // Agregar un nuevo nodo a la estela
+                Estela.AgregarNodo(X, Y);  
             }
             ConsumirCombustible();
             if (collisionManager.CheckCollisions(this))
             {
-                collisionManager.Explode(this);  // Eliminar el jugador si colisiona
+                collisionManager.Explode(this);  
             }
         }
 
         private void Explode()
         {
-            // Implementar la lógica de explosión
             collisionManager.AddExplosion(new Explosion(X, Y));
             collisionManager.RemoveJugador(this);
         }
@@ -167,10 +166,8 @@ namespace PRO_1DATOS
 
         public void RevisarColisionesConItems(List<Poderes> items)
         {
-            // Recorrer todos los ítems en la lista para verificar si el jugador colisiona con ellos
             for (int i = items.Count - 1; i >= 0; i--)
             {
-                // Si la posición del jugador coincide con la posición del ítem
                 if (X == items[i].Posicion.X && Y == items[i].Posicion.Y)
                 {
                     Console.WriteLine($"Recogido poder: {items[i].Tipo} en la posición {items[i].Posicion.X}, {items[i].Posicion.Y}");
@@ -182,12 +179,10 @@ namespace PRO_1DATOS
                     
                     else
                     {
-                        // Para otros poderes, recogerlos como normalmente lo haces
                         RecogerPoder(items[i]);
                         UsarPoder(Inventario.Count - 1);  // Activa el poder recién recogido
                     }
-                    // Elimina el ítem de la lista de ítems
-                    items.RemoveAt(i);  // Eliminar el ítem recogido para que desaparezca visualmente
+                    items.RemoveAt(i);  // elimino el ítem recogido para que desaparezca de la cuadricula
                 }
             }
         }

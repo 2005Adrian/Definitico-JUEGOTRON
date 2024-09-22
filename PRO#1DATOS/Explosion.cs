@@ -42,8 +42,7 @@ namespace PRO_1DATOS
         {
             if (!IsComplete)
             {
-                // Simple explosion animation using a circle
-                int size = 20 + (frame * 5); // Increase size each frame
+                int size = 20 + (frame * 5); 
                 g.FillEllipse(Brushes.OrangeRed, x - size / 2, y - size / 2, size, size);
             }
         }

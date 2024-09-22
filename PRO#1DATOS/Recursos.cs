@@ -7,15 +7,12 @@ namespace PRO_1DATOS
 {
     public static class Recursos
     {
-        // Diccionario para almacenar las imágenes con sus nombres
         private static Dictionary<string, Image> imagenes;
 
         static Recursos()
         {
-            // Inicializamos el diccionario
             imagenes = new Dictionary<string, Image>();
 
-            // Cargar todas las imágenes al inicializar la clase
             CargarImagenes();
         }
 
@@ -33,7 +30,6 @@ namespace PRO_1DATOS
 
 
 
-        // Método para obtener una imagen por su nombre
         public static Image ObtenerImagen(string nombre)
         {
             if (imagenes.TryGetValue(nombre, out var imagen))
@@ -42,8 +38,7 @@ namespace PRO_1DATOS
             }
             else
             {
-                // En lugar de arrojar una excepción, puedes retornar null o una imagen por defecto.
-                return Properties.Resources.moto; // Puedes cambiar a una imagen por defecto adecuada.
+                return Properties.Resources.moto; 
             }
         }
     }

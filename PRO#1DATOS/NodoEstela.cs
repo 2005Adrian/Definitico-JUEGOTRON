@@ -46,7 +46,7 @@ namespace PRO_1DATOS
             {
                 actual = actual.Siguiente;
             }
-            actual.Siguiente = null; // Cortar la estela
+            actual.Siguiente = null; 
         }
 
         public int ObtenerLongitud()
@@ -66,7 +66,7 @@ namespace PRO_1DATOS
             NodoEstela actual = Cabeza;
             while (actual != null)
             {
-                g.FillRectangle(new SolidBrush(color), actual.X, actual.Y, 20, 20);  // Asegúrate de que las coordenadas estén alineadas con las celdas
+                g.FillRectangle(new SolidBrush(color), actual.X, actual.Y, 20, 20); 
                 actual = actual.Siguiente;
             }
         }

@@ -18,14 +18,12 @@ namespace PRO_1DATOS
             random = new Random();
             Tipo = tipo;
             Posicion = posicion;
-            Valor = (tipo == "combustible") ? 50 : 1;  // Valor predeterminado para combustible u otros poderes
+            Valor = (tipo == "combustible") ? 50 : 1; 
             Imagen = ObtenerImagenPoder(tipo);
         }
 
-        // Asignar un valor aleatorio y una imagen basada en el tipo
         private Image ObtenerImagenPoder(string tipo)
         {
-            // Devuelve una imagen diferente según el tipo de poder
             switch (tipo)
             {
                 
@@ -46,8 +44,7 @@ namespace PRO_1DATOS
 
         public void Dibujar(Graphics g)
         {
-            // Dibujar la imagen en la posición del ítem/poder
-            g.DrawImage(Imagen, Posicion.X, Posicion.Y, 20, 20);  // Tamaño de 20x20
+            g.DrawImage(Imagen, Posicion.X, Posicion.Y, 20, 20);  
         }
     }
 }

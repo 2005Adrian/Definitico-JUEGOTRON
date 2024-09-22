@@ -32,7 +32,6 @@ namespace PRO_1DATOS
             {
                 currentDirection = GetNewDirection();
             }
-            // Moverse en la dirección actual
             switch (currentDirection)
             {
                 case Direction.Up:
@@ -48,21 +47,17 @@ namespace PRO_1DATOS
                     MoverIzquierda();
                     break;
             }
-            // Verificar colisión con los bordes de la cuadrícula
             if (X <= OffsetX || X >= OffsetX + GridWidth - CellSize || Y <= OffsetY || Y >= OffsetY + GridHeight - CellSize)
             {
-                Explode(); // El bot explota si choca con el borde
+                Explode(); 
             }
 
-            // Revisar colisiones con estelas y jugadores/bots
             if (collisionManager.CheckCollisions(this))
             {
-                Explode(); // Eliminar bot si colisiona con estela o jugador
+                Explode(); 
             }
 
-            // Consumir combustible
             ConsumirCombustible();
-            // Explota si se queda sin combustible
             if (Combustible <= 0)
             {
                 Explode();
@@ -71,7 +66,7 @@ namespace PRO_1DATOS
 
         public void RecogerPoder(Poderes poder)
         {
-            base.RecogerPoder(poder); // Llama al método de la clase base (Jugador)
+            base.RecogerPoder(poder); 
         }
 
 
@@ -82,7 +77,6 @@ namespace PRO_1DATOS
         }
         private Direction GetNewDirection()
         {
-            // Obtener una nueva dirección que no sea la opuesta a la actual
             Direction newDirection;
             do
             {
@@ -109,26 +103,22 @@ namespace PRO_1DATOS
             Combustible -= celdasRecorridas / 5;
             if (Combustible <= 0)
             {
-                Explode();  // Si se queda sin combustible, explota
+                Explode();  
             }
         }
 
         public void RevisarColisionesConItems(List<Poderes> items)
         {
-            // Recorrer todos los ítems en la lista para verificar si el bot colisiona con ellos
             for (int i = items.Count - 1; i >= 0; i--)
             {
-                // Si la posición del bot coincide con la posición del ítem
                 if (X == items[i].Posicion.X && Y == items[i].Posicion.Y)
                 {
                     Console.WriteLine($"Bot ha recogido el poder: {items[i].Tipo} en la posición {items[i].Posicion.X}, {items[i].Posicion.Y}");
 
-                    // Recoger el poder y activarlo inmediatamente
                     RecogerPoder(items[i]);
-                    UsarPoder(Inventario.Count - 1);  // Activa el poder recién recogido
+                    UsarPoder(Inventario.Count - 1);  
 
-                    // Elimina el ítem de la lista de ítems
-                    items.RemoveAt(i);  // Eliminar el ítem recogido para que desaparezca visualmente
+                    items.RemoveAt(i);  
                 }
             }
         }

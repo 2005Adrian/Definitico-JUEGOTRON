@@ -11,7 +11,6 @@ namespace PRO_1DATOS
 {
     public partial class GameForm : Form
     {
-        // Declaring the necessary variables.
         public ListaEnlazadaRectangulos listaEnlazada;
         public Jugador jugador;
         public Image motoImagen;
@@ -23,25 +22,24 @@ namespace PRO_1DATOS
         public int gridWidth;
         public int gridHeight;
         public System.Windows.Forms.Timer timer;
-        public int CellSize { get; set; }  // Agregar CellSize si no está definido
-
+        public int CellSize { get; set; } 
         public SoundPlayer soundPlayer;
         public GameForm()
         {
             InitializeComponent();
             this.BackColor = Color.Magenta;
-            CellSize = 20;  // Puedes ajustar este valor según el tamaño de las celdas
+            CellSize = 20;  
 
-            // Initialize 'items' before use
+
             items = new List<Poderes>();
             if (Form.ActiveForm is GameForm gameForm)
             {
                 var items = gameForm.items;
-                // Continúa procesando los items...
+
             }
             else
             {
-                // Maneja el caso donde el form no es el activo o no es de tipo GameForm
+
             }
 
             reproducirSonido();
@@ -104,7 +102,7 @@ namespace PRO_1DATOS
             random = new Random();
             int filas = this.ClientSize.Height / 20;
             int columnas = 25;
-            int offsetX = (this.ClientSize.Width - columnas * CellSize) / 2;  // Centrar la cuadrícula
+            int offsetX = (this.ClientSize.Width - columnas * CellSize) / 2; 
             int offsetY = 0;
             gridWidth = columnas * CellSize;
             gridHeight = filas * CellSize;
@@ -113,8 +111,8 @@ namespace PRO_1DATOS
             listaEnlazada = new ListaEnlazadaRectangulos(filas, columnas, offsetX, offsetY);
             GenerarItemsAleatorios();
 
-            int playerStartX = (offsetX + (columnas * CellSize / 2)) / CellSize * CellSize;  // Alinear al tamaño de la celda
-            int playerStartY = (filas * CellSize - 60) / CellSize * CellSize;  // Alinear al tamaño de la celda
+            int playerStartX = (offsetX + (columnas * CellSize / 2)) / CellSize * CellSize; 
+            int playerStartY = (filas * CellSize - 60) / CellSize * CellSize; 
 
             collisionManager = new CollisionManager(new List<Jugador>(), new List<Bot>());
 
@@ -152,16 +150,14 @@ namespace PRO_1DATOS
                 RectanguloNodo nodoAleatorio = listaEnlazada.ObtenerNodoAleatorio();
                 Point posicionAleatoria = new Point(nodoAleatorio.Rectangulo.X, nodoAleatorio.Rectangulo.Y);
 
-                int valorItem = tipo == "combustible" ? 100 : random.Next(10, 50);  // Establecer el valor del combustible a 100
+                int valorItem = tipo == "combustible" ? 100 : random.Next(10, 50);  
 
                 Poderes gaso = new Poderes(tipo, posicionAleatoria,valorItem);
                 
 
                 items.Add(gaso);
-               // items.Add(hiper);
-               // items.Add(crece);
+               
 
-                // Imprimir en la consola la generación de un nuevo ítem
                 Console.WriteLine($"Generado poder: {tipo} en la posición {posicionAleatoria.X}, {posicionAleatoria.Y}");
             }
         }
@@ -172,35 +168,27 @@ namespace PRO_1DATOS
             base.OnPaint(e);
 
             Pen neonPen = new Pen(Color.Aqua, 2);
-            // Drawing the grid
             foreach (var nodo in listaEnlazada.Matriz)
             {
                 e.Graphics.DrawRectangle(Pens.Aqua, nodo.Rectangulo);
             }
 
-            // Drawing items
             foreach (var item in items)
             {
                 item.Dibujar(e.Graphics);
             }
 
-            // Drawing fuel bar
             DibujarBarraGasolina(e.Graphics);
 
-            // Drawing inventory
             DibujarInventario(e.Graphics);
 
-            // Drawing player and bots
             jugador.Estela.DibujarEstela(e.Graphics);
 
-            // Centrar el jugador en la celda, ajustando su imagen al tamaño de la celda.
             int jugadorX = (jugador.X / jugador.CellSize) * jugador.CellSize + (jugador.CellSize - jugador.MotoImagen.Width) / 2;
             int jugadorY = (jugador.Y / jugador.CellSize) * jugador.CellSize + (jugador.CellSize - jugador.MotoImagen.Height) / 2;
 
-            // Dibujar al jugador centrado
             e.Graphics.DrawImage(jugador.MotoImagen, jugadorX, jugadorY, jugador.CellSize, jugador.CellSize);
 
-            // Dibujar los bots
             foreach (var bot in bots)
             {
                 bot.Estela.DibujarEstela(e.Graphics);
@@ -217,28 +205,22 @@ namespace PRO_1DATOS
             int barraHeight = 20;
             float porcentajeGasolina = (float)jugador.Combustible / 100;
 
-            // Dibujar la barra de gasolina
             g.DrawRectangle(Pens.Gray, 10, 10, barraWidth, barraHeight);
             g.FillRectangle(Brushes.Red, 10, 10, barraWidth * porcentajeGasolina, barraHeight);
 
-            // Obtener la imagen de combustible de los recursos
             Image gasolinaImage = Recursos.ObtenerImagen("combustible");
 
-            // Dibujar la imagen de gasolina junto a la barra
-            g.DrawImage(gasolinaImage, 10, 10, 30, 30); // Ajusta la posición y tamaño según sea necesario
+            g.DrawImage(gasolinaImage, 10, 10, 30, 30); 
 
-            // Comprobar si el combustible es 0 y mostrar el mensaje solo una vez
             if (jugador.Combustible == 0 && !juegoTerminado)
             {
                 juegoTerminado = true;
-                this.Close();// Evitar que se vuelva a mostrar el mensaje
-                                       // Lógica adicional para finalizar el juego o reiniciar al jugador
+                this.Close();
             }
         }
 
 
 
-        // Method to draw the player's inventory.
         private void DibujarInventario(Graphics g)
         {
             int startX = 10;
@@ -254,22 +236,21 @@ namespace PRO_1DATOS
             }
         }
 
-        // Key event handler for player movement and using powers.
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
                 case Keys.Left:
-                    jugador.MoverIzquierda();  // Pass 'this' as the GameForm reference
+                    jugador.MoverIzquierda(); 
                     break;
                 case Keys.Right:
-                    jugador.MoverDerecha();    // Pass 'this' as the GameForm reference
+                    jugador.MoverDerecha();    
                     break;
                 case Keys.Up:
-                    jugador.MoverArriba();     // Pass 'this' as the GameForm reference
+                    jugador.MoverArriba();     
                     break;
                 case Keys.Down:
-                    jugador.MoverAbajo();      // Pass 'this' as the GameForm reference
+                    jugador.MoverAbajo();      
                     break;
                 case Keys.C:
                     jugador.UsarPoder(jugador.Inventario.FindIndex(p => p.Tipo == "crecimiento_estela"));
@@ -284,10 +265,9 @@ namespace PRO_1DATOS
                     jugador.UsarPoder(jugador.Inventario.FindIndex(p => p.Tipo == "hiper_velocidad"));
                     break;
             }
-            jugador.RevisarColisionesConItems(items);  // Pasar la lista de ítems para verificar colisiones
+            jugador.RevisarColisionesConItems(items);  
 
-
-            Invalidate();  // Redraw the screen
+            Invalidate();  
         }
 
         private Image CrearImagenMoto(int width, int height, Color color)

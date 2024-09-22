@@ -11,7 +11,7 @@ namespace PRO_1DATOS
         public ListaEnlazadaRectangulos(int filas, int columnas, int offsetX, int offsetY)
         {
             Matriz = new List<RectanguloNodo>();
-            CrearMatriz(filas, columnas, offsetX, offsetY);  // Llamamos a CrearMatriz para llenar la lista
+            CrearMatriz(filas, columnas, offsetX, offsetY); 
         }
 
         private void CrearMatriz(int filas, int columnas, int offsetX, int offsetY)
@@ -23,12 +23,11 @@ namespace PRO_1DATOS
                     int x = offsetX + columna * 20;
                     int y = offsetY + fila * 20;
                     RectanguloNodo nodo = new RectanguloNodo(x, y, 20, 20);
-                    Matriz.Add(nodo);  // Agregamos el nodo a la lista
+                    Matriz.Add(nodo);  
                 }
             }
         }
 
-        // Método para seleccionar un nodo aleatorio de la matriz
         public RectanguloNodo ObtenerNodoAleatorio()
         {
             if (Matriz.Count == 0)
@@ -37,7 +36,7 @@ namespace PRO_1DATOS
             }
 
             Random random = new Random();
-            int indexAleatorio = random.Next(Matriz.Count); // Obtenemos un índice aleatorio
+            int indexAleatorio = random.Next(Matriz.Count); 
             return Matriz[indexAleatorio];
         }
     }
