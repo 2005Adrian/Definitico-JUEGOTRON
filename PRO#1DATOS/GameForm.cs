@@ -50,8 +50,9 @@ namespace PRO_1DATOS
             SoundPlayer soundPlayer = new SoundPlayer(Properties.Resources.fondogameform);
             soundPlayer.PlayLooping();
         }
+        
 
-        private void MoverBots()
+        public void MoverBots()
         {
             if (gameOver) return;
 
@@ -91,13 +92,13 @@ namespace PRO_1DATOS
         }
 
 
-        private void GameForm_Load(object sender, EventArgs e)
+        public void GameForm_Load(object sender, EventArgs e)
         {
 
         }
 
         
-        private void InicializarJuego()
+        public void InicializarJuego()
         {
             random = new Random();
             int filas = this.ClientSize.Height / 20;
@@ -140,7 +141,7 @@ namespace PRO_1DATOS
             this.KeyDown += OnKeyDown;
         }
 
-        private void GenerarItemsAleatorios()
+        public void GenerarItemsAleatorios()
         {
             string[] tiposDeItems = { "combustible", "crecimiento_estela", "bomba", "escudo", "hiper_velocidad" };
 
@@ -197,9 +198,9 @@ namespace PRO_1DATOS
         }
 
 
-        private bool juegoTerminado = false;
+        public bool juegoTerminado = false;
 
-        private void DibujarBarraGasolina(Graphics g)
+        public void DibujarBarraGasolina(Graphics g)
         {
             int barraWidth = 200;
             int barraHeight = 20;
@@ -221,7 +222,7 @@ namespace PRO_1DATOS
 
 
 
-        private void DibujarInventario(Graphics g)
+        public void DibujarInventario(Graphics g)
         {
             int startX = 10;
             int startY = 40;
@@ -236,7 +237,7 @@ namespace PRO_1DATOS
             }
         }
 
-        private void OnKeyDown(object sender, KeyEventArgs e)
+        public void OnKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
@@ -270,7 +271,7 @@ namespace PRO_1DATOS
             Invalidate();  
         }
 
-        private Image CrearImagenMoto(int width, int height, Color color)
+        public Image CrearImagenMoto(int width, int height, Color color)
         {
             Bitmap bmp = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(bmp))
@@ -282,7 +283,7 @@ namespace PRO_1DATOS
             return bmp;
         }
 
-        private Color GetBotColor(int index)
+        public Color GetBotColor(int index)
         {
             Color[] colors = { Color.Blue, Color.Green, Color.Yellow, Color.Purple, Color.Orange };
             return colors[index % colors.Length];

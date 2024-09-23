@@ -32,7 +32,6 @@ namespace PRO_1DATOS
         {
             pictureBox1 = new PictureBox();
             button1 = new Button();
-            button3 = new Button();
             label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -55,27 +54,13 @@ namespace PRO_1DATOS
             button1.BackgroundImage = Properties.Resources._225fc3bd_78a4_4b35_974f_6af2f7f9d9da;
             button1.Font = new Font("Stencil", 48F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.ForeColor = Color.LightSteelBlue;
-            button1.Location = new Point(394, 237);
+            button1.Location = new Point(395, 389);
             button1.Name = "button1";
             button1.Size = new Size(212, 92);
             button1.TabIndex = 1;
             button1.Text = "PLAY";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
-            // 
-            // button3
-            // 
-            button3.BackColor = Color.Transparent;
-            button3.BackgroundImage = Properties.Resources._4df20992_e2ce_4dd5_988d_0bf2c205ed13;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.Font = new Font("Stencil", 26.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button3.ForeColor = Color.LightSkyBlue;
-            button3.Location = new Point(348, 401);
-            button3.Name = "button3";
-            button3.Size = new Size(298, 92);
-            button3.TabIndex = 3;
-            button3.Text = "INSTRUCCIONES";
-            button3.UseVisualStyleBackColor = false;
             // 
             // label1
             // 
@@ -98,7 +83,6 @@ namespace PRO_1DATOS
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1030, 881);
             Controls.Add(label1);
-            Controls.Add(button3);
             Controls.Add(button1);
             Controls.Add(pictureBox1);
             Name = "Form1";
@@ -113,7 +97,6 @@ namespace PRO_1DATOS
         private PictureBox pictureBox1;
         private Button button1;
         private Button button2;
-        private Button button3;
         private Label label1;
     }
 }

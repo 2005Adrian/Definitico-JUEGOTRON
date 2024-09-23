@@ -16,7 +16,7 @@ namespace PRO_1DATOS
             CargarImagenes();
         }
 
-        private static void CargarImagenes()
+        public static void CargarImagenes()
         {
             imagenes["moto"] = Properties.Resources.moto;
             imagenes["bot"] = Properties.Resources.bot;

@@ -14,7 +14,7 @@ namespace PRO_1DATOS
             CrearMatriz(filas, columnas, offsetX, offsetY); 
         }
 
-        private void CrearMatriz(int filas, int columnas, int offsetX, int offsetY)
+        public void CrearMatriz(int filas, int columnas, int offsetX, int offsetY)
         {
             for (int fila = 0; fila < filas; fila++)
             {

@@ -71,11 +71,11 @@ namespace PRO_1DATOS
 
 
 
-        private Direction GetRandomDirection()
+        public Direction GetRandomDirection()
         {
             return (Direction)random.Next(4);
         }
-        private Direction GetNewDirection()
+        public Direction GetNewDirection()
         {
             Direction newDirection;
             do
@@ -84,7 +84,7 @@ namespace PRO_1DATOS
             } while (IsOppositeDirection(newDirection));
             return newDirection;
         }
-        private bool IsOppositeDirection(Direction newDirection)
+        public bool IsOppositeDirection(Direction newDirection)
         {
             return (currentDirection == Direction.Up && newDirection == Direction.Down) ||
                    (currentDirection == Direction.Down && newDirection == Direction.Up) ||
@@ -97,7 +97,7 @@ namespace PRO_1DATOS
             collisionManager.AddExplosion(new Explosion(X, Y));
             collisionManager.RemoveBot(this);
         }
-        private void ConsumirCombustible()
+        public void ConsumirCombustible()
         {
             int celdasRecorridas = Velocidad * 5;
             Combustible -= celdasRecorridas / 5;

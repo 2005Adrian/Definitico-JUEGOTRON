@@ -28,7 +28,7 @@ namespace PRO_1DATOS
             explosionTimer.Start();
         }
 
-        private void UpdateFrame()
+        public void UpdateFrame()
         {
             frame++;
             if (frame >= totalFrames)

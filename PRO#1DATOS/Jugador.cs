@@ -141,7 +141,7 @@ namespace PRO_1DATOS
             }
         }
 
-        private void Explode()
+        public void Explode()
         {
             collisionManager.AddExplosion(new Explosion(X, Y));
             collisionManager.RemoveJugador(this);
@@ -152,12 +152,12 @@ namespace PRO_1DATOS
             if (Combustible < 0) Combustible = 0;
         }
 
-        private void ConsumirCombustible()
+        public void ConsumirCombustible()
         {
             int celdasRecorridas = Velocidad * 2;
             ReducirCombustible(celdasRecorridas /10);
         }
-        private void ActualizarEstela()
+        public void ActualizarEstela()
         {
             Estela.AgregarNodo(X, Y);
         }
